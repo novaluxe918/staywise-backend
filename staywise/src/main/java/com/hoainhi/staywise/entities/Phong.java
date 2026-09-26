@@ -56,5 +56,8 @@ public class Phong {
     @OneToMany(mappedBy = "phong", fetch = FetchType.EAGER)
     private List<DuDoanGia> duDoanGias;
 
+    @OneToMany(mappedBy = "phong", fetch = FetchType.EAGER)
+    private List<DatPhong> datPhongs;
+
 
 }

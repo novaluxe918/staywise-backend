@@ -49,5 +49,9 @@ public class NguoiDung {
     @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.EAGER)
     private List<HomeStay> homeStays;
 
+    @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.EAGER)
+    private List<DatPhong> datPhongs;
 
+    @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.EAGER)
+    private List<DanhGia> danhGias;
 }
