@@ -17,31 +17,33 @@ public class NguoiDung {
     @Column(name = "maNguoiDung")
     private Long id;
 
-    @Column(columnDefinition = "varchar(100) not null")
+    @Column(name="hoten",columnDefinition = "varchar(100) not null")
     private String hoTen;
 
-    @Column(nullable = false)
+    @Column(name = "email",nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "matKhau",nullable = false)
     private String matKhau;
 
-    @Column(columnDefinition = "varchar(10)")
+    @Column(name = "soDienThoai",columnDefinition = "varchar(10)")
     private String soDienThoai;
 
-    @Column(columnDefinition = "varchar(10)")
+    @Column(name = "cccd",columnDefinition = "varchar(10)")
     private String cccd;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "vaiTro",nullable = false)
     private VaiTro vaiTro;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "trangthai", nullable = false)
     private TrangThaiUser trangThaiUser;
 
+    @Column(name = "anhDaiDien")
     private String anhDaiDien;
 
+    @Column(name = "ngaytao")
     private LocalDateTime ngayTao;
 
     @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.EAGER)

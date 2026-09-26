@@ -14,7 +14,7 @@ public class DichVu {
     @Column(name = "maDichVu")
     private Long id;
 
-    @Column(columnDefinition = "varchar(100)")
+    @Column(name = "tendichvu",columnDefinition = "varchar(100)")
     private String tenDichVu;
 
     @OneToMany(mappedBy = "dichVu", fetch = FetchType.EAGER)

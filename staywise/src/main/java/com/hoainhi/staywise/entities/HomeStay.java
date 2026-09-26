@@ -22,55 +22,63 @@ public class HomeStay {
     @JoinColumn(name = "maChuHomeStay", nullable = false)
     private NguoiDung nguoiDung;
 
-    @Column(columnDefinition = "varchar(100) not null")
+    @Column(name = "tenHomeStay",columnDefinition = "varchar(100) not null")
     private String tenHomeStay;
 
-    @Column(columnDefinition = " text")
+    @Column(name = "moTa",columnDefinition = " text")
     private String moTa;
 
-    @Column(nullable = false)
+    @Column(name = "phuongXa",nullable = false)
     private String phuongXa;
 
-    @Column(nullable = false)
+    @Column(name = "quanHuyen",nullable = false)
     private String quanHuyen;
 
-    @Column(nullable = false)
+    @Column(name = "tinhThanh",nullable = false)
     private String tinhThanh;
 
-    @Column(nullable = false)
+    @Column(name="diaChi",nullable = false)
     private String diaChi;
 
-    @Column(columnDefinition = " varchar(10)")
+    @Column(name = "sodienthoai",columnDefinition = " varchar(10)")
     private String soDienThoai;
 
     @Column(columnDefinition = "varchar(100)")
     private String email;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "trangthai",nullable = false)
    private TrangThaiHomeStay trangThaiHomeStay;
 
-    @Column(columnDefinition = "text")
+    @Column(name = "lyDoTuChoi",columnDefinition = "text")
     private String lyDoTuChoi;
 
+    @Column(name = "ngayDangKy")
     private LocalDate ngayDangKy;
 
+    @Column(name = "ngayPheDuyet")
     private LocalDate ngayPheDuyet;
 
+    @Column(name = "ngayCapNhat")
     private LocalDate ngayCapNhat;
 
+    @Column(name = "ngayTao")
     private LocalDateTime ngayTao;
 
     @OneToMany(mappedBy = "homeStay", fetch = FetchType.EAGER)
     private List<HinhAnhHomeStay> homeStays;
 
-    private boolean daXoa;
+    @Column(name = "daXoa")
+    private Boolean daXoa;
 
     @OneToMany(mappedBy = "homeStay", fetch = FetchType.EAGER)
     private List<TienIchHomeStay> tienIchHomeStays;
 
     @OneToMany(mappedBy = "homeStay", fetch = FetchType.EAGER)
    private List<HomeStayDichVu> homeStayDichVus;
+
+    @OneToMany(mappedBy = "homeStay", fetch = FetchType.EAGER)
+    private List<Phong> phongs;
 
 
 

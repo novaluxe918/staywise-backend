@@ -16,6 +16,7 @@ public class HomeStayDichVu {
     @JoinColumn(name = "maHomeStay", nullable = false)
     private HomeStay homeStay;
 
+    @Column(name = "trangthai")
     private boolean trangThai;
 
     @ManyToOne

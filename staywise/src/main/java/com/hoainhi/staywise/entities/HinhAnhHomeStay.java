@@ -19,8 +19,10 @@ public class HinhAnhHomeStay {
     @JoinColumn(name = "maHomeStay", nullable = false)
     private HomeStay homeStay;
 
+    @Column(name = "duongdan")
     private String duongDan;
 
+    @Column(name = "laAnhDaiDien")
     private boolean laAnhDaiDien;
 
     private LocalDateTime ngayTao;

@@ -15,12 +15,13 @@ public class TienIch {
     @Column(name = "matienich")
     private Long id;
 
-    @Column(columnDefinition = "varchar(100)")
+    @Column(name = "tenTienIch",columnDefinition = "varchar(100)")
     private String tenTienIch;
 
-    @Column(columnDefinition = "text")
+    @Column(name = "moTa",columnDefinition = "text")
     private String moTa;
 
+    @Column(name = "ngayTao")
     private LocalDateTime ngayTao;
 
     @ManyToOne
