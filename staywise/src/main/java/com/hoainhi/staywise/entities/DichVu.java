@@ -1,5 +1,6 @@
 package com.hoainhi.staywise.entities;
 
+import com.hoainhi.staywise.enums.TrangThai;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,4 +20,8 @@ public class DichVu {
 
     @OneToMany(mappedBy = "dichVu", fetch = FetchType.EAGER)
     private List<HomeStayDichVu> homeStayDichVus;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "trangThai")
+    private TrangThai trangThai;
 }

@@ -18,7 +18,6 @@ public class TheLoaiTienIch {
     private String tenTheLoai;
 
     private String hinhAnh;
-
     @OneToMany(mappedBy = "theLoaiTienIch", fetch = FetchType.EAGER)
     private List<TienIch> tienIches;
 

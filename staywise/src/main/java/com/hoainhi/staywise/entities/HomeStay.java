@@ -68,9 +68,6 @@ public class HomeStay {
     @OneToMany(mappedBy = "homeStay", fetch = FetchType.EAGER)
     private List<HinhAnhHomeStay> homeStays;
 
-    @Column(name = "daXoa")
-    private Boolean daXoa;
-
     @OneToMany(mappedBy = "homeStay", fetch = FetchType.EAGER)
     private List<TienIchHomeStay> tienIchHomeStays;
 

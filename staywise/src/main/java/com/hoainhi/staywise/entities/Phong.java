@@ -41,9 +41,6 @@ public class Phong {
     @Column(name = "ngaytao")
     private LocalDateTime ngayTao;
 
-    @Column(name = "daXoa")
-    private Boolean daXoa;
-
     @OneToMany(mappedBy = "phong", fetch = FetchType.EAGER)
     private List<ChiTietGiuong> chiTietGiuongs;
 

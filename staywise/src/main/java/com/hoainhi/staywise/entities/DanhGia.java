@@ -1,5 +1,6 @@
 package com.hoainhi.staywise.entities;
 
+import com.hoainhi.staywise.enums.TrangThaiDanhGia;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -34,6 +35,12 @@ public class DanhGia {
 
     @Column(name = "ngayDanhGia")
     private LocalDateTime ngayDanhGia;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "trangThai")
+    private TrangThaiDanhGia trangThaiDanhGia;
+
+
 
 
 }

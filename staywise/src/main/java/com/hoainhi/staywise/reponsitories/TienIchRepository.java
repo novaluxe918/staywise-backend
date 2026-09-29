@@ -2,6 +2,8 @@ package com.hoainhi.staywise.reponsitories;
 
 import com.hoainhi.staywise.entities.TienIch;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface TienIchRepositpry extends JpaRepository<TienIch, Long> {
+@Repository
+public interface TienIchRepository extends JpaRepository<TienIch, Long> {
 }
