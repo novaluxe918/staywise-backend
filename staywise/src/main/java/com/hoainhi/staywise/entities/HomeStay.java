@@ -80,5 +80,7 @@ public class HomeStay {
     @OneToMany(mappedBy = "homeStay", fetch = FetchType.EAGER)
     private List<DanhGia> danhGias;
 
+    @OneToMany(mappedBy = "homeStay", fetch = FetchType.EAGER)
+    private List<KhuyenMaiHomeStay> khuyenMaiHomeStays;
 
 }

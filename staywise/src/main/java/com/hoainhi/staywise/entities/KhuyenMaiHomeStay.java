@@ -5,11 +5,11 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "homestayDichVu")
-public class HomeStayDichVu {
+@Table(name = "khuyenMaiHomeStay")
+public class KhuyenMaiHomeStay {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "maHSDichVu")
+    @Column(name = "maKMHomeStay")
     private Long id;
 
     @ManyToOne
@@ -17,6 +17,7 @@ public class HomeStayDichVu {
     private HomeStay homeStay;
 
     @ManyToOne
-    @JoinColumn(name = "maDichVu", nullable = false)
-    private DichVu dichVu;
+    @JoinColumn(name = "maKhuyenMai", nullable = false)
+    private KhuyenMai khuyenMai;
+
 }

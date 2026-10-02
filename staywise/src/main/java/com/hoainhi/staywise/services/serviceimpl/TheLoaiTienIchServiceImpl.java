@@ -1,6 +1,7 @@
 package com.hoainhi.staywise.services.serviceimpl;
 
 import com.hoainhi.staywise.entities.TheLoaiTienIch;
+import com.hoainhi.staywise.enums.TrangThai;
 import com.hoainhi.staywise.reponsitories.TheLoaiTienIchRepository;
 import com.hoainhi.staywise.services.TheLoaiTienIchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,19 @@ public class TheLoaiTienIchServiceImpl implements TheLoaiTienIchService {
     public Page<TheLoaiTienIch> timKiem(String tuKhoa, int trang, int kichThuoc) {
         Pageable pageable = PageRequest.of(trang, kichThuoc, Sort.by("id").descending());
         if(tuKhoa == null || "".equals(tuKhoa.trim())){
-           return theLoaiTienIchRepository.findAll(pageable);
+           return theLoaiTienIchRepository.findByTrangThaiNot(TrangThai.DA_XOA, pageable);
         }
-        return theLoaiTienIchRepository.findByTenTheLoaiContainingIgnoreCase(tuKhoa, pageable);
+        return theLoaiTienIchRepository.findByTenTheLoaiContainingIgnoreCase(tuKhoa, TrangThai.DA_XOA, pageable);
+    }
+
+    @Override
+    public void xoa(Long id) {
+        TheLoaiTienIch theLoaiTienIch = theLoaiTienIchRepository.findById(id).orElseThrow(() ->
+                new RuntimeException(
+                        "Không tìm thấy thể loại tiện ích"
+                ));
+        theLoaiTienIch.setTrangThai(TrangThai.DA_XOA);
+        theLoaiTienIchRepository.save(theLoaiTienIch);
+
     }
 }

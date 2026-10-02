@@ -8,4 +8,5 @@ import org.springframework.stereotype.Service;
 public interface TheLoaiTienIchService {
     TheLoaiTienIch themTheLoai(TheLoaiTienIch theLoaiTienIch );
     Page<TheLoaiTienIch> timKiem(String tuKhoa, int trang, int kichThuoc);
+    void xoa(Long id);
 }

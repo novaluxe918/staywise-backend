@@ -2,6 +2,7 @@ package com.hoainhi.staywise.controllers;
 
 import com.hoainhi.staywise.dtos.TheLoaiTienTichDTO;
 import com.hoainhi.staywise.entities.TheLoaiTienIch;
+import com.hoainhi.staywise.enums.TrangThai;
 import com.hoainhi.staywise.services.serviceimpl.TheLoaiTienIchServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +31,22 @@ public class TheLoaiTienIchController {
         try {
             TheLoaiTienIch theLoaiTienIch = new TheLoaiTienIch();
             BeanUtils.copyProperties(theLoaiTienTichDTO, theLoaiTienIch);
+            theLoaiTienIch.setTrangThai(TrangThai.DANG_HOAT_DONG);
             theLoaiTienIchService.themTheLoai(theLoaiTienIch);
             return ResponseEntity.ok("Them thanh cong!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Them that bai!");
 
+        }
+    }
+
+    @DeleteMapping("/xoa/{id}")
+    private ResponseEntity<?> xoaTheLoai(@PathVariable Long id){
+        try{
+            theLoaiTienIchService.xoa(id);
+            return ResponseEntity.ok("Xoa thanh cong!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Xoa that bai!");
         }
     }
 
