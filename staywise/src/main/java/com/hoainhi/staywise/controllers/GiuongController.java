@@ -1,52 +1,51 @@
 package com.hoainhi.staywise.controllers;
 
-import com.hoainhi.staywise.dtos.DichVuDTO;
-import com.hoainhi.staywise.entities.DichVu;
+import com.hoainhi.staywise.dtos.LoaiGiuongDTO;
+import com.hoainhi.staywise.entities.LoaiGiuong;
 import com.hoainhi.staywise.enums.TrangThai;
-import com.hoainhi.staywise.services.serviceimpl.DichVuServiceImpl;
+import com.hoainhi.staywise.services.serviceimpl.LoaiGiuongServiceImpl;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/dichVu")
-public class DichVuController {
+@RequestMapping("/giuong")
+public class GiuongController {
+
     @Autowired
-    private DichVuServiceImpl dichVuService;
+    private LoaiGiuongServiceImpl loaiGiuongService;
 
     @PostMapping("/save")
-    private ResponseEntity<?> themDichVu(@RequestBody DichVuDTO dichVuDTO){
+    public ResponseEntity<?> themLoaiGiuong(LoaiGiuongDTO loaiGiuongDTO){
         try{
-            DichVu dichVu = new DichVu();
-            BeanUtils.copyProperties(dichVuDTO, dichVu);
-            dichVu.setTrangThai(TrangThai.DANG_HOAT_DONG);
-            dichVuService.themDichVu(dichVu);
-            return ResponseEntity.ok("Them thanh cong!");
+            LoaiGiuong loaiGiuong = new LoaiGiuong();
+            BeanUtils.copyProperties(loaiGiuongDTO, loaiGiuong);
+            loaiGiuong.setTrangThai(TrangThai.DANG_HOAT_DONG);
+            loaiGiuongService.themLoaiGiuong(loaiGiuong);
+            return ResponseEntity.ok().body("Them thanh cong!");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-
     }
 
     @GetMapping("/timkiem")
     private ResponseEntity<?> timKiem( @RequestParam(defaultValue = "") String tuKhoa,
                                        @RequestParam(defaultValue = "0") int trang,  @RequestParam(defaultValue = "5") int kichThuoc){
-        Page<DichVu> dichVus = dichVuService.timKiem(tuKhoa, trang, kichThuoc);
-        return ResponseEntity.ok(dichVus);
+        Page<LoaiGiuong> loaiGiuongs = loaiGiuongService.timKiem(tuKhoa, trang, kichThuoc);
+        return ResponseEntity.ok(loaiGiuongs);
     }
 
-    @DeleteMapping("/xoa/{id}")
-    private ResponseEntity<?> xoaDichVu(@PathVariable Long id){
+    private ResponseEntity<?> xoaLoaiGiuong(@PathVariable Long id){
         try{
-            dichVuService.xoa(id);
-            return  ResponseEntity.ok().body("Xoa thanh cong");
+            loaiGiuongService.xoa(id);
+            return ResponseEntity.ok().body("Xoa thanh cong");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
 }
