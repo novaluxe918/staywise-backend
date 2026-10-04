@@ -35,7 +35,7 @@ public class TienIchController {
     }
 
     @GetMapping("/timKiem")
-    private ResponseEntity<?> timKiemTienIch(@RequestParam(defaultValue = "") String tuKhoa,
+    public ResponseEntity<?> timKiemTienIch(@RequestParam(defaultValue = "") String tuKhoa,
                                              @RequestParam(defaultValue = "0") int trang,
                                              @RequestParam(defaultValue = "5") int kichThuoc){
         Page<TienIch> tienIches = tienIchService.timKiemTienIch(tuKhoa, trang, kichThuoc);
@@ -43,7 +43,7 @@ public class TienIchController {
     }
 
     @DeleteMapping("/xoa")
-    private ResponseEntity<?> xoaTienIch(@PathVariable Long id){
+    public ResponseEntity<?> xoaTienIch(@PathVariable Long id){
         try{
             tienIchService.xoa(id);
             return ResponseEntity.ok("Xoa thanh cong!");

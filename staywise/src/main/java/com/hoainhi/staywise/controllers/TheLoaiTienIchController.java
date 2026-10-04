@@ -41,7 +41,7 @@ public class TheLoaiTienIchController {
     }
 
     @DeleteMapping("/xoa/{id}")
-    private ResponseEntity<?> xoaTheLoai(@PathVariable Long id){
+    public ResponseEntity<?> xoaTheLoai(@PathVariable Long id){
         try{
             theLoaiTienIchService.xoa(id);
             return ResponseEntity.ok("Xoa thanh cong!");

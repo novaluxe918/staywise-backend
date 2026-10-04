@@ -20,7 +20,7 @@ public class GiuongController {
     private LoaiGiuongServiceImpl loaiGiuongService;
 
     @PostMapping("/save")
-    public ResponseEntity<?> themLoaiGiuong(LoaiGiuongDTO loaiGiuongDTO){
+    public ResponseEntity<?> themLoaiGiuong(@RequestBody  LoaiGiuongDTO loaiGiuongDTO){
         try{
             LoaiGiuong loaiGiuong = new LoaiGiuong();
             BeanUtils.copyProperties(loaiGiuongDTO, loaiGiuong);
@@ -33,13 +33,14 @@ public class GiuongController {
     }
 
     @GetMapping("/timkiem")
-    private ResponseEntity<?> timKiem( @RequestParam(defaultValue = "") String tuKhoa,
+    public ResponseEntity<?> timKiem( @RequestParam(defaultValue = "") String tuKhoa,
                                        @RequestParam(defaultValue = "0") int trang,  @RequestParam(defaultValue = "5") int kichThuoc){
         Page<LoaiGiuong> loaiGiuongs = loaiGiuongService.timKiem(tuKhoa, trang, kichThuoc);
         return ResponseEntity.ok(loaiGiuongs);
     }
 
-    private ResponseEntity<?> xoaLoaiGiuong(@PathVariable Long id){
+    @DeleteMapping("/xoa")
+    public ResponseEntity<?> xoaLoaiGiuong(@PathVariable Long id){
         try{
             loaiGiuongService.xoa(id);
             return ResponseEntity.ok().body("Xoa thanh cong");

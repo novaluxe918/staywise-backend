@@ -26,7 +26,7 @@ public class DichVuServiceImpl implements DichVuService {
         if(tuKhoa == null || "".equals(tuKhoa.trim())){
             return dichVuRepository.findByTrangThaiNot(TrangThai.DA_XOA, pageable);
         }
-        return dichVuRepository.finByTenDichVuContainingIgnoreCase(tuKhoa, pageable, TrangThai.DA_XOA);
+        return dichVuRepository.findByTenDichVuContainingIgnoreCase(tuKhoa, pageable, TrangThai.DA_XOA);
     }
 
     @Override

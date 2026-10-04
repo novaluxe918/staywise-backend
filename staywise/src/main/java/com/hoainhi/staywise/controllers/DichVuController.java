@@ -20,7 +20,7 @@ public class DichVuController {
     private DichVuServiceImpl dichVuService;
 
     @PostMapping("/save")
-    private ResponseEntity<?> themDichVu(@RequestBody DichVuDTO dichVuDTO){
+    public ResponseEntity<?> themDichVu(@RequestBody DichVuDTO dichVuDTO){
         try{
             DichVu dichVu = new DichVu();
             BeanUtils.copyProperties(dichVuDTO, dichVu);
@@ -34,14 +34,14 @@ public class DichVuController {
     }
 
     @GetMapping("/timkiem")
-    private ResponseEntity<?> timKiem( @RequestParam(defaultValue = "") String tuKhoa,
+    public ResponseEntity<?> timKiem( @RequestParam(defaultValue = "") String tuKhoa,
                                        @RequestParam(defaultValue = "0") int trang,  @RequestParam(defaultValue = "5") int kichThuoc){
         Page<DichVu> dichVus = dichVuService.timKiem(tuKhoa, trang, kichThuoc);
         return ResponseEntity.ok(dichVus);
     }
 
     @DeleteMapping("/xoa/{id}")
-    private ResponseEntity<?> xoaDichVu(@PathVariable Long id){
+    public ResponseEntity<?> xoaDichVu(@PathVariable Long id){
         try{
             dichVuService.xoa(id);
             return  ResponseEntity.ok().body("Xoa thanh cong");

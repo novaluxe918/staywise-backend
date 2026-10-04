@@ -32,8 +32,9 @@ public class KhuyenMai {
     private LocalDateTime ngayBatDau;
 
     @Column(name = "ngayKetThuc")
-    private  LocalDateTime ngayKetthuc;
+    private  LocalDateTime ngayKetThuc;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "trangThai")
     private TrangThaiKhuyenMai trangThaiKhuyenMai;
 
