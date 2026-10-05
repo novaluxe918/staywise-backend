@@ -3,6 +3,7 @@ package com.hoainhi.staywise.services.serviceimpl;
 import com.hoainhi.staywise.dtos.DangKyDTO;
 import com.hoainhi.staywise.entities.NguoiDung;
 import com.hoainhi.staywise.enums.TrangThaiUser;
+import com.hoainhi.staywise.enums.VaiTro;
 import com.hoainhi.staywise.reponsitories.NguoiDungRepository;
 import com.hoainhi.staywise.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
         nguoiDung.setSoDienThoai(dangKyDTO.getSoDienThoai());
         nguoiDung.setMatKhau(passwordEncoder.encode(dangKyDTO.getMatKhau()));
         nguoiDung.setTrangThaiUser(TrangThaiUser.DANG_HOAT_DONG);
-        nguoiDung.setVaiTro(dangKyDTO.getVaiTro());
+        nguoiDung.setVaiTro(VaiTro.USER);
         nguoiDung.setNgayTao(LocalDateTime.now());
         return nguoiDungRepository.save(nguoiDung);
     }

@@ -2,6 +2,7 @@ package com.hoainhi.staywise.controllers;
 
 import com.hoainhi.staywise.dtos.DangKyDTO;
 import com.hoainhi.staywise.services.serviceimpl.AuthServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +19,12 @@ public class AuthController {
     private AuthServiceImpl authService;
 
     @PostMapping("/dangKy")
-    public ResponseEntity<?> dangky(@RequestBody DangKyDTO dangKyDTO){
+    public ResponseEntity<?> dangky(@Valid @RequestBody DangKyDTO dangKyDTO){
        try{
            authService.dangKy(dangKyDTO);
            return ResponseEntity.ok().body("Dang ky thanh cong");
        } catch (Exception e) {
-           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+           return ResponseEntity.badRequest().body(e.getMessage());
        }
     }
 }
