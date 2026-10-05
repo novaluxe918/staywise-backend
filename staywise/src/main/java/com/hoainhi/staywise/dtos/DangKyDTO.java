@@ -16,9 +16,12 @@ public class DangKyDTO {
     @Email(message = "Email không đúng định dạng")
     private String email;
 
-    @NotBlank(message = " Mật khẩu kooong được để trống")
+    @NotBlank(message = " Mật khẩu khong được để trống")
     @Size(min = 6, max = 8, message = "Mật khẩu phải từ 6 đến 8 ký tự")
     private String matKhau;
+
+    @NotBlank(message = "Xác nhận mật khẩu không được để trống")
+    private String xacNhanMatKhau;
 
     @NotBlank(message = "Số điện thoại không được để trống")
     @Pattern(
