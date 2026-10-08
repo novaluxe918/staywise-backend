@@ -5,6 +5,7 @@ import com.hoainhi.staywise.entities.TheLoaiTienIch;
 import com.hoainhi.staywise.entities.TienIch;
 import com.hoainhi.staywise.enums.TrangThai;
 import com.hoainhi.staywise.services.serviceimpl.TienIchServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,7 +23,7 @@ public class TienIchController {
     private TienIchServiceImpl tienIchService;
 
     @PostMapping("/save")
-    public ResponseEntity<?> saveTienIch(@RequestBody TienIchDTO tienIchDTO){
+    public ResponseEntity<?> saveTienIch(@Valid @RequestBody TienIchDTO tienIchDTO){
         try {
             TienIch tienIch = new TienIch();
             BeanUtils.copyProperties(tienIchDTO, tienIch);

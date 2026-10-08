@@ -4,6 +4,7 @@ import com.hoainhi.staywise.dtos.TheLoaiTienTichDTO;
 import com.hoainhi.staywise.entities.TheLoaiTienIch;
 import com.hoainhi.staywise.enums.TrangThai;
 import com.hoainhi.staywise.services.serviceimpl.TheLoaiTienIchServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,7 @@ public class TheLoaiTienIchController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> saveTheLoai(@RequestBody TheLoaiTienTichDTO theLoaiTienTichDTO) {
+    public ResponseEntity<?> saveTheLoai( @Valid @RequestBody TheLoaiTienTichDTO theLoaiTienTichDTO) {
         try {
             TheLoaiTienIch theLoaiTienIch = new TheLoaiTienIch();
             BeanUtils.copyProperties(theLoaiTienTichDTO, theLoaiTienIch);

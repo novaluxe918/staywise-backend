@@ -4,6 +4,7 @@ import com.hoainhi.staywise.dtos.DichVuDTO;
 import com.hoainhi.staywise.entities.DichVu;
 import com.hoainhi.staywise.enums.TrangThai;
 import com.hoainhi.staywise.services.serviceimpl.DichVuServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,7 @@ public class DichVuController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> themDichVu(@RequestBody DichVuDTO dichVuDTO){
+    public ResponseEntity<?> themDichVu(@Valid @RequestBody DichVuDTO dichVuDTO){
         try{
             DichVu dichVu = new DichVu();
             BeanUtils.copyProperties(dichVuDTO, dichVu);

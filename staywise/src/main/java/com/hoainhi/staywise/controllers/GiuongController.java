@@ -4,6 +4,7 @@ import com.hoainhi.staywise.dtos.LoaiGiuongDTO;
 import com.hoainhi.staywise.entities.LoaiGiuong;
 import com.hoainhi.staywise.enums.TrangThai;
 import com.hoainhi.staywise.services.serviceimpl.LoaiGiuongServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,8 +20,15 @@ public class GiuongController {
     @Autowired
     private LoaiGiuongServiceImpl loaiGiuongService;
 
+    @GetMapping("/timkiem")
+    public ResponseEntity<?> timKiem( @RequestParam(defaultValue = "") String tuKhoa,
+                                      @RequestParam(defaultValue = "0") int trang,  @RequestParam(defaultValue = "5") int kichThuoc){
+        Page<LoaiGiuong> loaiGiuongs = loaiGiuongService.timKiem(tuKhoa, trang, kichThuoc);
+        return ResponseEntity.ok(loaiGiuongs);
+    }
+
     @PostMapping("/save")
-    public ResponseEntity<?> themLoaiGiuong(@RequestBody  LoaiGiuongDTO loaiGiuongDTO){
+    public ResponseEntity<?> themLoaiGiuong(@Valid  @RequestBody  LoaiGiuongDTO loaiGiuongDTO){
         try{
             LoaiGiuong loaiGiuong = new LoaiGiuong();
             BeanUtils.copyProperties(loaiGiuongDTO, loaiGiuong);
@@ -32,12 +40,7 @@ public class GiuongController {
         }
     }
 
-    @GetMapping("/timkiem")
-    public ResponseEntity<?> timKiem( @RequestParam(defaultValue = "") String tuKhoa,
-                                       @RequestParam(defaultValue = "0") int trang,  @RequestParam(defaultValue = "5") int kichThuoc){
-        Page<LoaiGiuong> loaiGiuongs = loaiGiuongService.timKiem(tuKhoa, trang, kichThuoc);
-        return ResponseEntity.ok(loaiGiuongs);
-    }
+
 
     @DeleteMapping("/xoa")
     public ResponseEntity<?> xoaLoaiGiuong(@PathVariable Long id){
