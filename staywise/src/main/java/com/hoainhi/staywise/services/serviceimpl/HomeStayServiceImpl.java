@@ -1,10 +1,7 @@
 package com.hoainhi.staywise.services.serviceimpl;
 
 import com.hoainhi.staywise.dtos.HomeStayDTO;
-import com.hoainhi.staywise.entities.HomeStay;
-import com.hoainhi.staywise.entities.NguoiDung;
-import com.hoainhi.staywise.entities.TienIch;
-import com.hoainhi.staywise.entities.TienIchHomeStay;
+import com.hoainhi.staywise.entities.*;
 import com.hoainhi.staywise.enums.TrangThaiHomeStay;
 import com.hoainhi.staywise.enums.VaiTro;
 import com.hoainhi.staywise.reponsitories.HomeStayRepository;
@@ -28,7 +25,9 @@ public class HomeStayServiceImpl implements HomeStayService {
     @Autowired
     private TienIchHomeServiceImpl tienIchHomeService;
 
-    private TienIchServiceImpl tienIchService;
+    @Autowired
+    private HomeStayDichVuImpl homeStayDichVu;
+
     @Override
     public void themHomeStay(HomeStayDTO homeStayDTO, Long maChuHomeStay) {
         HomeStay homeStay = new HomeStay();
@@ -47,5 +46,13 @@ public class HomeStayServiceImpl implements HomeStayService {
             tienIchHomeService.themTienIchHomeStay(tienIchHomeStay);
         }
 
+        for(Long item : homeStayDTO.getDanhSachDichVuHS()){
+            DichVu dichVu = new DichVu();
+            dichVu.setId(item);
+            HomeStayDichVu stayDichVu = new HomeStayDichVu();
+            stayDichVu.setHomeStay(homeStay);
+            stayDichVu.setDichVu(dichVu);
+            homeStayDichVu.themHomeStayDichVu(stayDichVu);
+        }
     }
 }

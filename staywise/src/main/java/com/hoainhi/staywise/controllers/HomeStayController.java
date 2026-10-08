@@ -18,14 +18,14 @@ public class HomeStayController {
     @Autowired
     private HomeStayServiceImpl homeStayService;
 
-    @PostMapping("/save/{maChuHomeStay}")
-    public ResponseEntity<?> themHomeStay(@PathVariable Long maChuHomeStay, @RequestBody HomeStayDTO homeStayDTO){
+    @PostMapping("/save")
+    public ResponseEntity<?> themHomeStay( @RequestBody HomeStayDTO homeStayDTO){
         try{
-           homeStayService.themHomeStay(homeStayDTO, maChuHomeStay);
+           homeStayService.themHomeStay(homeStayDTO, homeStayDTO.getMaChuHomeStay());
            return ResponseEntity.status(HttpStatus.CREATED).body("Dang ky thanh cong, cho phe duyet");
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("dang ky that bai!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("dang ky that bai!" +   e.getMessage());
         }
     }
 }

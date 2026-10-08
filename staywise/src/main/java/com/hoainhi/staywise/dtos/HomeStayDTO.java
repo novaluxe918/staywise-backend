@@ -8,6 +8,8 @@ import java.util.List;
 
 @Data
 public class HomeStayDTO {
+    private Long maChuHomeStay;
+
     private String tenHomeStay;
 
     private String moTa;
@@ -29,4 +31,6 @@ public class HomeStayDTO {
     private LocalDate ngayDangKy;
 
     private List<Long> danhSachTienIchHS;
+
+    private List<Long> danhSachDichVuHS;
 }
