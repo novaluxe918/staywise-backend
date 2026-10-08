@@ -35,7 +35,6 @@ public class AuthController {
         try{
             NguoiDung nguoiDung = authService.dangNhap(dangNhapDTO);
             return ResponseEntity.ok().body("Dang nhap thanh cong!");
-
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)

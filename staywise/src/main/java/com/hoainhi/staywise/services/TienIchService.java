@@ -4,9 +4,12 @@ import com.hoainhi.staywise.entities.TienIch;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public interface TienIchService {
     TienIch themTienIch(TienIch tienIch, Long maTheLoai);
     Page<TienIch> timKiemTienIch(String tuKhoa, int trang, int kichThuoc);
     void xoa(Long id);
+    Optional<TienIch> findById(Long id);
 }

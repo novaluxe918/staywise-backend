@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class TienIchServiceImpl implements TienIchService {
@@ -48,5 +49,10 @@ public class TienIchServiceImpl implements TienIchService {
         TienIch tienIch = tienIchRepository.findById(id).orElseThrow();
         tienIch.setTrangThai(TrangThai.DA_XOA);
         tienIchRepository.save(tienIch);
+    }
+
+    @Override
+    public Optional<TienIch> findById(Long id) {
+        return tienIchRepository.findById(id);
     }
 }

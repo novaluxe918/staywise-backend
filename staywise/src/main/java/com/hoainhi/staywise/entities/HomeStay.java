@@ -1,5 +1,6 @@
 package com.hoainhi.staywise.entities;
 
+import com.hoainhi.staywise.enums.TheLoaiHomeStay;
 import com.hoainhi.staywise.enums.TrangThaiHomeStay;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -59,11 +60,9 @@ public class HomeStay {
     @Column(name = "ngayPheDuyet")
     private LocalDate ngayPheDuyet;
 
-    @Column(name = "ngayCapNhat")
-    private LocalDate ngayCapNhat;
-
-    @Column(name = "ngayTao")
-    private LocalDateTime ngayTao;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "theloai")
+    private TheLoaiHomeStay theLoaiHomeStay;
 
     @OneToMany(mappedBy = "homeStay", fetch = FetchType.EAGER)
     private List<HinhAnhHomeStay> homeStays;

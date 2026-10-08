@@ -19,6 +19,13 @@ public class DichVuController {
     @Autowired
     private DichVuServiceImpl dichVuService;
 
+    @GetMapping("")
+    public ResponseEntity<?> showAll( @RequestParam(defaultValue = "") String tuKhoa,
+                                      @RequestParam(defaultValue = "0") int trang,  @RequestParam(defaultValue = "5") int kichThuoc){
+        Page<DichVu> dichVus = dichVuService.timKiem(tuKhoa, trang, kichThuoc);
+        return ResponseEntity.ok(dichVus);
+    }
+
     @PostMapping("/save")
     public ResponseEntity<?> themDichVu(@RequestBody DichVuDTO dichVuDTO){
         try{
@@ -26,19 +33,15 @@ public class DichVuController {
             BeanUtils.copyProperties(dichVuDTO, dichVu);
             dichVu.setTrangThai(TrangThai.DANG_HOAT_DONG);
             dichVuService.themDichVu(dichVu);
-            return ResponseEntity.ok("Them thanh cong!");
+             String message = dichVuDTO.getId() == null ? "Them thanh cong!" : "Sua thanh cong";
+            return ResponseEntity.ok(message);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
     }
 
-    @GetMapping("/timkiem")
-    public ResponseEntity<?> timKiem( @RequestParam(defaultValue = "") String tuKhoa,
-                                       @RequestParam(defaultValue = "0") int trang,  @RequestParam(defaultValue = "5") int kichThuoc){
-        Page<DichVu> dichVus = dichVuService.timKiem(tuKhoa, trang, kichThuoc);
-        return ResponseEntity.ok(dichVus);
-    }
+
 
     @DeleteMapping("/xoa/{id}")
     public ResponseEntity<?> xoaDichVu(@PathVariable Long id){
