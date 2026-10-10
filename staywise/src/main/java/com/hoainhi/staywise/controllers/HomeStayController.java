@@ -1,6 +1,7 @@
 package com.hoainhi.staywise.controllers;
 
 import com.hoainhi.staywise.dtos.HomeStayDTO;
+import com.hoainhi.staywise.dtos.TuChoiHomeStayDTO;
 import com.hoainhi.staywise.entities.HomeStay;
 import com.hoainhi.staywise.services.serviceimpl.HomeStayServiceImpl;
 import jakarta.validation.Valid;
@@ -42,6 +43,16 @@ public class HomeStayController {
             homeStayService.duyetHomeStay(id);
             return ResponseEntity.ok().body("Da duyet homestay");
 
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/tuChoi")
+    public ResponseEntity<?> tuChoiHomeStay(@RequestBody TuChoiHomeStayDTO tuChoiHomeStayDTO){
+        try{
+            homeStayService.tuChoiHomeStay(tuChoiHomeStayDTO.getId(), tuChoiHomeStayDTO.getLyDoTuChoi());
+            return ResponseEntity.ok().body("Da gui thong tin");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

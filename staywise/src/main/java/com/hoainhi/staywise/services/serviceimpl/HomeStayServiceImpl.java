@@ -91,7 +91,20 @@ public class HomeStayServiceImpl implements HomeStayService {
              throw new RuntimeException("HomeStay khong o trang thai cho duyet");
 
         }
+        homeStay.setNgayPheDuyet(LocalDate.now());
         homeStay.setTrangThaiHomeStay(TrangThaiHomeStay.DA_DUYET);
+        return homeStayRepository.save(homeStay);
+    }
+
+    @Override
+    public HomeStay tuChoiHomeStay(Long id, String lyDoTuChoi) {
+        HomeStay homeStay = homeStayRepository.findById(id).orElseThrow(() -> new RuntimeException("Khong tim thay homestay"));
+        if (homeStay.getTrangThaiHomeStay() != TrangThaiHomeStay.CHO_DUYET) {
+            throw new RuntimeException(
+                    "Chỉ được từ chối HomeStay đang chờ duyệt!");
+        }
+        homeStay.setTrangThaiHomeStay(TrangThaiHomeStay.TU_CHOI);
+        homeStay.setLyDoTuChoi(lyDoTuChoi.trim());
         return homeStayRepository.save(homeStay);
     }
 

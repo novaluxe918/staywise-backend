@@ -11,4 +11,5 @@ public interface HomeStayService {
     Page<HomeStayDTO> showAll(String tuKhoa, int trang, int kichThuoc);
     HomeStay getById(Long id);
     HomeStay duyetHomeStay(Long id);
+    HomeStay tuChoiHomeStay(Long id, String lyDoTuChoi);
 }
