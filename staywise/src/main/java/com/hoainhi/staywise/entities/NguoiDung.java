@@ -29,8 +29,6 @@ public class NguoiDung {
     @Column(name = "soDienThoai",columnDefinition = "varchar(10)")
     private String soDienThoai;
 
-    @Column(name = "cccd",columnDefinition = "varchar(10)")
-    private String cccd;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "vaiTro",nullable = false)
@@ -46,12 +44,21 @@ public class NguoiDung {
     @Column(name = "ngaytao")
     private LocalDateTime ngayTao;
 
-    @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.EAGER)
+    @Column(name = "anh_giay_phep_kinh_doanh")
+    private String anhGiayPhepKinhDoanh;
+
+    @Column(name = "anh_cccd_mat_truoc")
+    private String anhCCCDMatTruoc;
+
+    @Column(name = "anh_cccd_mat_sau")
+    private String anhCCCDMatSau;
+
+    @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.LAZY)
     private List<HomeStay> homeStays;
 
-    @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.LAZY)
     private List<DatPhong> datPhongs;
 
-    @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.LAZY)
     private List<DanhGia> danhGias;
 }

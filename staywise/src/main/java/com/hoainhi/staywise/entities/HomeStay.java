@@ -1,5 +1,6 @@
 package com.hoainhi.staywise.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hoainhi.staywise.enums.TheLoaiHomeStay;
 import com.hoainhi.staywise.enums.TrangThaiHomeStay;
 import jakarta.persistence.*;
@@ -20,6 +21,7 @@ public class HomeStay {
     private Long id;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "maChuHomeStay", nullable = false)
     private NguoiDung nguoiDung;
 
@@ -64,22 +66,22 @@ public class HomeStay {
     @Column(name = "theloai")
     private TheLoaiHomeStay theLoaiHomeStay;
 
-    @OneToMany(mappedBy = "homeStay", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "homeStay", fetch = FetchType.LAZY)
     private List<HinhAnhHomeStay> homeStays;
 
-    @OneToMany(mappedBy = "homeStay", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "homeStay", fetch = FetchType.LAZY)
     private List<TienIchHomeStay> tienIchHomeStays;
 
-    @OneToMany(mappedBy = "homeStay", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "homeStay", fetch = FetchType.LAZY)
    private List<HomeStayDichVu> homeStayDichVus;
 
-    @OneToMany(mappedBy = "homeStay", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "homeStay", fetch = FetchType.LAZY)
     private List<Phong> phongs;
 
-    @OneToMany(mappedBy = "homeStay", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "homeStay", fetch = FetchType.LAZY)
     private List<DanhGia> danhGias;
 
-    @OneToMany(mappedBy = "homeStay", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "homeStay", fetch = FetchType.LAZY)
     private List<KhuyenMaiHomeStay> khuyenMaiHomeStays;
 
 }

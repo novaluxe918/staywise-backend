@@ -5,19 +5,25 @@ import com.hoainhi.staywise.entities.HomeStay;
 import com.hoainhi.staywise.services.serviceimpl.HomeStayServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/homestay")
 public class HomeStayController {
     @Autowired
     private HomeStayServiceImpl homeStayService;
+
+    @GetMapping("/timKiem")
+    public ResponseEntity<?> showAllHomeStay(@RequestParam(defaultValue = "") String tuKhoa,
+                                             @RequestParam(defaultValue = "0") int trang,
+                                             @RequestParam(defaultValue = "5") int kichThuoc){
+        Page<HomeStayDTO> homeStays = homeStayService.showAll(tuKhoa, trang, kichThuoc);
+        return ResponseEntity.ok(homeStays);
+    }
 
     @PostMapping("/save")
     public ResponseEntity<?> themHomeStay(@Valid @RequestBody HomeStayDTO homeStayDTO){
@@ -27,6 +33,17 @@ public class HomeStayController {
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("dang ky that bai!" +   e.getMessage());
+        }
+    }
+
+    @PutMapping("/duyet/{id}")
+   public ResponseEntity<?> duyetHomeStay(@PathVariable Long id){
+        try{
+            homeStayService.duyetHomeStay(id);
+            return ResponseEntity.ok().body("Da duyet homestay");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 }

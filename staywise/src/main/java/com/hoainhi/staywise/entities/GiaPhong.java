@@ -1,5 +1,6 @@
 package com.hoainhi.staywise.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,6 +18,7 @@ public class GiaPhong {
     private Long id;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "maPhong", nullable = false)
     private Phong phong;
 

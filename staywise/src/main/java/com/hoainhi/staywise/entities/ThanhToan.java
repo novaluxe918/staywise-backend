@@ -1,5 +1,6 @@
 package com.hoainhi.staywise.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hoainhi.staywise.enums.TrangThaiThanhToan;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class ThanhToan {
 
     @ManyToOne
     @JoinColumn(name = "maDatPhong", nullable = false)
+    @JsonIgnore
     private DatPhong datPhong;
 
     @Column(name = "maGiaoDich")

@@ -9,6 +9,10 @@ import com.hoainhi.staywise.reponsitories.NguoiDungRepository;
 import com.hoainhi.staywise.services.HomeStayService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -55,4 +59,41 @@ public class HomeStayServiceImpl implements HomeStayService {
             homeStayDichVu.themHomeStayDichVu(stayDichVu);
         }
     }
+
+    @Override
+    public Page<HomeStayDTO> showAll(String tuKhoa, int trang, int kichThuoc) {
+        Pageable pageable = PageRequest.of(trang, kichThuoc, Sort.by("id").descending());
+        Page<HomeStay> homeStays =
+                homeStayRepository.findByTenHomeStayContaining(tuKhoa, pageable);
+
+        return homeStays.map(homeStay -> {
+            HomeStayDTO dto = new HomeStayDTO();
+
+            BeanUtils.copyProperties(homeStay, dto);
+
+            return dto;
+        });
+    }
+
+    @Override
+    public HomeStay getById(Long id) {
+        HomeStay homeStay = homeStayRepository.findById(id).orElseThrow(() -> new RuntimeException("Khong tim thay homestay"));
+        if(homeStay.getTrangThaiHomeStay() == TrangThaiHomeStay.DA_XOA){
+            throw new RuntimeException("Homestay da bi xoa");
+        }
+        return homeStay;
+    }
+
+    @Override
+    public HomeStay duyetHomeStay(Long id) {
+        HomeStay homeStay = homeStayRepository.findById(id).orElseThrow(() -> new RuntimeException("Khong tim thay homestay"));
+        if(homeStay.getTrangThaiHomeStay() != TrangThaiHomeStay.CHO_DUYET){
+             throw new RuntimeException("HomeStay khong o trang thai cho duyet");
+
+        }
+        homeStay.setTrangThaiHomeStay(TrangThaiHomeStay.DA_DUYET);
+        return homeStayRepository.save(homeStay);
+    }
+
+
 }
