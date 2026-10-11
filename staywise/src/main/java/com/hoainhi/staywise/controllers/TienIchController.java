@@ -25,11 +25,29 @@ public class TienIchController {
     @PostMapping("/save")
     public ResponseEntity<?> saveTienIch(@Valid @RequestBody TienIchDTO tienIchDTO){
         try {
-            TienIch tienIch = new TienIch();
-            BeanUtils.copyProperties(tienIchDTO, tienIch);
-            tienIch.setTrangThai(TrangThai.DANG_HOAT_DONG);
+            boolean themMoi = tienIchDTO.getId() == null;
+
+            TienIch tienIch;
+            if(themMoi){
+                tienIch = new TienIch();
+                tienIch.setTrangThai(TrangThai.DANG_HOAT_DONG);
+            } else {
+                tienIch = tienIchService.findById(tienIchDTO.getId()).orElseThrow(() -> new RuntimeException("khong tim thay"));
+
+            }
+            BeanUtils.copyProperties(
+                    tienIchDTO,
+                    tienIch,
+                    "id",
+                    "trangThai",
+                    "theLoaiTienIch"
+            );
             tienIchService.themTienIch(tienIch, tienIchDTO.getMatheloai());
-            return ResponseEntity.ok("them thanh cong!");
+            String message = themMoi
+                    ? "Thêm tiện ích thành công!"
+                    : "Sửa tiện ích thành công!";
+
+            return ResponseEntity.ok(message);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Them that bai!");
         }

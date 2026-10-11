@@ -40,4 +40,9 @@ public class TheLoaiTienIchServiceImpl implements TheLoaiTienIchService {
         theLoaiTienIchRepository.save(theLoaiTienIch);
 
     }
+
+    @Override
+    public TheLoaiTienIch getById(Long id) {
+        return theLoaiTienIchRepository.findById(id).orElseThrow(() -> new RuntimeException("khong tim thay"));
+    }
 }

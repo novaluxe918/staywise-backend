@@ -9,4 +9,5 @@ public interface TheLoaiTienIchService {
     TheLoaiTienIch themTheLoai(TheLoaiTienIch theLoaiTienIch );
     Page<TheLoaiTienIch> timKiem(String tuKhoa, int trang, int kichThuoc);
     void xoa(Long id);
+    TheLoaiTienIch getById(Long id);
 }

@@ -30,9 +30,15 @@ public class TheLoaiTienIchController {
     @PostMapping("/save")
     public ResponseEntity<?> saveTheLoai( @Valid @RequestBody TheLoaiTienTichDTO theLoaiTienTichDTO) {
         try {
-            TheLoaiTienIch theLoaiTienIch = new TheLoaiTienIch();
-            BeanUtils.copyProperties(theLoaiTienTichDTO, theLoaiTienIch);
-            theLoaiTienIch.setTrangThai(TrangThai.DANG_HOAT_DONG);
+            boolean themMoi = theLoaiTienTichDTO.getId() == null;
+            TheLoaiTienIch theLoaiTienIch ;
+            if(themMoi){
+                theLoaiTienIch = new TheLoaiTienIch();
+                theLoaiTienIch.setTrangThai(TrangThai.DANG_HOAT_DONG);
+            } else {
+              theLoaiTienIch =  theLoaiTienIchService.getById(theLoaiTienTichDTO.getId());
+            }
+            BeanUtils.copyProperties(theLoaiTienTichDTO, theLoaiTienIch, "id", "tenTheLoai", "hinhAnh");
             theLoaiTienIchService.themTheLoai(theLoaiTienIch);
             return ResponseEntity.ok("Them thanh cong!");
         } catch (Exception e) {

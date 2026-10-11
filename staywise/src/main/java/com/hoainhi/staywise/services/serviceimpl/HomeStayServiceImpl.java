@@ -108,5 +108,44 @@ public class HomeStayServiceImpl implements HomeStayService {
         return homeStayRepository.save(homeStay);
     }
 
+    @Override
+    public void xoa(Long id) {
+        HomeStay homeStay = homeStayRepository.findById(id).orElseThrow(() -> new RuntimeException("Khong tim thay HomeStay"));
+        homeStay.setTrangThaiHomeStay(TrangThaiHomeStay.DA_XOA);
+        homeStayRepository.save(homeStay);
+    }
+
+    @Override
+    public void ngungKinhDoanh(Long id) {
+        HomeStay homeStay = homeStayRepository
+                .findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Không tìm thấy HomeStay")
+                );
+
+        homeStay.setTrangThaiHomeStay(
+                TrangThaiHomeStay.TAM_NGUNG
+        );
+
+        homeStayRepository.save(homeStay);
+    }
+
+    @Override
+    public void capNhatHomeStay(Long id, HomeStayDTO dto) {
+        HomeStay homeStay = homeStayRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Không tìm thấy HomeStay!"));
+        BeanUtils.copyProperties(
+                dto,
+                homeStay,
+                "id",
+                "maChuHomeStay",
+                "trangThaiHomeStay",
+                "ngayDangKy",
+                "danhSachTienIchHS",
+                "danhSachDichVuHS"
+        );
+    }
+
 
 }

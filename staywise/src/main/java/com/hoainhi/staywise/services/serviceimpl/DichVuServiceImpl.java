@@ -38,4 +38,9 @@ public class DichVuServiceImpl implements DichVuService {
         dichVuRepository.save(dichVu);
 
     }
+
+    @Override
+    public DichVu getById(Long id) {
+        return dichVuRepository.findById(id).orElseThrow(() -> new RuntimeException("Khong tim thay dich vu"));
+    }
 }

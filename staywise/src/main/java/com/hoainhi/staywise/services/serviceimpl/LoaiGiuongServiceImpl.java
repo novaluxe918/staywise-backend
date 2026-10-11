@@ -35,4 +35,9 @@ public class LoaiGiuongServiceImpl implements LoaiGiuongService {
         loaiGiuongRepository.save(loaiGiuong);
 
     }
+
+    @Override
+    public LoaiGiuong getById(Long id) {
+        return loaiGiuongRepository.findById(id).orElseThrow(() -> new RuntimeException("khong tim thay"));
+    }
 }

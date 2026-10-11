@@ -11,6 +11,7 @@ import java.util.List;
 
 @Data
 public class HomeStayDTO {
+    private Long id;
     private Long maChuHomeStay;
 
     @NotBlank(message = "Tên HomeStay không được để trống")

@@ -9,4 +9,5 @@ public interface DichVuService {
     DichVu themDichVu(DichVu dichVu);
     Page<DichVu> timKiem(String tuKhoa, int trang, int kichThuoc);
     void xoa(Long id);
+    DichVu getById(Long id);
 }

@@ -9,5 +9,6 @@ public interface LoaiGiuongService {
     LoaiGiuong themLoaiGiuong(LoaiGiuong loaiGiuong);
     Page<LoaiGiuong> timKiem(String tuKhoa, int trang, int kichThuoc);
     void xoa(Long id);
+    LoaiGiuong getById(Long id);
 }
 

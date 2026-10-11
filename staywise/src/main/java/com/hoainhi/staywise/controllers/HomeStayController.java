@@ -1,8 +1,6 @@
 package com.hoainhi.staywise.controllers;
 
 import com.hoainhi.staywise.dtos.HomeStayDTO;
-import com.hoainhi.staywise.dtos.TuChoiHomeStayDTO;
-import com.hoainhi.staywise.entities.HomeStay;
 import com.hoainhi.staywise.services.serviceimpl.HomeStayServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,32 +27,27 @@ public class HomeStayController {
     @PostMapping("/save")
     public ResponseEntity<?> themHomeStay(@Valid @RequestBody HomeStayDTO homeStayDTO){
         try{
-           homeStayService.themHomeStay(homeStayDTO, homeStayDTO.getMaChuHomeStay());
-           return ResponseEntity.status(HttpStatus.CREATED).body("Dang ky thanh cong, cho phe duyet");
+            boolean themMoi = homeStayDTO.getId() == null;
+            if (themMoi) {
+                homeStayService.themHomeStay(
+                        homeStayDTO,
+                        homeStayDTO.getMaChuHomeStay()
+                );
+            } else {
+                homeStayService.capNhatHomeStay(
+                        homeStayDTO.getId(),
+                        homeStayDTO
+                );
+            }
+            String message = homeStayDTO.getId() == null ? "Dang ky thanh cong, cho phe duyet" : "Cap nhat thong tin thanh cong";
+           return ResponseEntity.status(HttpStatus.CREATED).body(message);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("dang ky that bai!" +   e.getMessage());
         }
     }
 
-    @PutMapping("/duyet/{id}")
-   public ResponseEntity<?> duyetHomeStay(@PathVariable Long id){
-        try{
-            homeStayService.duyetHomeStay(id);
-            return ResponseEntity.ok().body("Da duyet homestay");
 
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
 
-    @PutMapping("/tuChoi")
-    public ResponseEntity<?> tuChoiHomeStay(@RequestBody TuChoiHomeStayDTO tuChoiHomeStayDTO){
-        try{
-            homeStayService.tuChoiHomeStay(tuChoiHomeStayDTO.getId(), tuChoiHomeStayDTO.getLyDoTuChoi());
-            return ResponseEntity.ok().body("Da gui thong tin");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
+
 }

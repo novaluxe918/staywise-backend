@@ -12,4 +12,7 @@ public interface HomeStayService {
     HomeStay getById(Long id);
     HomeStay duyetHomeStay(Long id);
     HomeStay tuChoiHomeStay(Long id, String lyDoTuChoi);
+    void xoa(Long id);
+    void ngungKinhDoanh(Long id);
+    void capNhatHomeStay(Long id, HomeStayDTO dto);
 }

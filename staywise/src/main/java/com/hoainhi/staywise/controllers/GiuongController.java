@@ -30,11 +30,18 @@ public class GiuongController {
     @PostMapping("/save")
     public ResponseEntity<?> themLoaiGiuong(@Valid  @RequestBody  LoaiGiuongDTO loaiGiuongDTO){
         try{
-            LoaiGiuong loaiGiuong = new LoaiGiuong();
-            BeanUtils.copyProperties(loaiGiuongDTO, loaiGiuong);
-            loaiGiuong.setTrangThai(TrangThai.DANG_HOAT_DONG);
+            boolean themMoi = loaiGiuongDTO.getId() == null;
+            LoaiGiuong loaiGiuong;
+            if(themMoi){
+                loaiGiuong = new LoaiGiuong();
+                loaiGiuong.setTrangThai(TrangThai.DANG_HOAT_DONG);
+            }else {
+             loaiGiuong =   loaiGiuongService.getById(loaiGiuongDTO.getId());
+            }
+            BeanUtils.copyProperties(loaiGiuongDTO, loaiGiuong, "id", "trangThai");
             loaiGiuongService.themLoaiGiuong(loaiGiuong);
-            return ResponseEntity.ok().body("Them thanh cong!");
+            String message = loaiGiuongDTO.getId() == null ? "Them thanh cong!" : "Cap nhat thanh cong";
+            return ResponseEntity.ok().body(message);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }

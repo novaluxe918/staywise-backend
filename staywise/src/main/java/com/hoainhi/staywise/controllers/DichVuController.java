@@ -30,12 +30,19 @@ public class DichVuController {
     @PostMapping("/save")
     public ResponseEntity<?> themDichVu(@Valid @RequestBody DichVuDTO dichVuDTO){
         try{
-            DichVu dichVu = new DichVu();
-            BeanUtils.copyProperties(dichVuDTO, dichVu);
-            dichVu.setTrangThai(TrangThai.DANG_HOAT_DONG);
-            dichVuService.themDichVu(dichVu);
-             String message = dichVuDTO.getId() == null ? "Them thanh cong!" : "Sua thanh cong";
-            return ResponseEntity.ok(message);
+            boolean themMoi = dichVuDTO.getId() == null;
+            DichVu dichVu;
+           if(themMoi){
+               dichVu = new DichVu();
+               dichVu.setTrangThai(TrangThai.DANG_HOAT_DONG);
+           } else {
+             dichVu =  dichVuService.getById(dichVuDTO.getId());
+
+           }
+           BeanUtils.copyProperties(dichVuDTO, dichVu, "id", "trangThai");
+           dichVuService.themDichVu(dichVu);
+           String message = dichVuDTO.getId() == null ? "Them thanh cong!" : "Sua thanh cong";
+           return ResponseEntity.ok(message);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
