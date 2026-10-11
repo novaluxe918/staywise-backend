@@ -1,5 +1,6 @@
 package com.hoainhi.staywise.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,6 +18,7 @@ public class HinhAnhHomeStay {
 
     @ManyToOne
     @JoinColumn(name = "maHomeStay", nullable = false)
+    @JsonIgnore
     private HomeStay homeStay;
 
     @Column(name = "duongdan")
