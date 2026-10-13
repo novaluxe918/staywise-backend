@@ -1,5 +1,6 @@
 package com.hoainhi.staywise.services.serviceimpl;
 
+import com.hoainhi.staywise.dtos.HinhAnhHomeStayDTO;
 import com.hoainhi.staywise.entities.HinhAnhHomeStay;
 import com.hoainhi.staywise.entities.HomeStay;
 import com.hoainhi.staywise.reponsitories.HinhAnhHomeStayRepository;
@@ -7,6 +8,7 @@ import com.hoainhi.staywise.reponsitories.HomeStayRepository;
 import com.hoainhi.staywise.services.HinhAnhHomeStayService;
 import com.hoainhi.staywise.services.cloudinary.CloudinaryService;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,7 +32,7 @@ public class HinhAnhHomeStaySeviceImpl implements HinhAnhHomeStayService {
 
     @Override
     @Transactional
-    public List<HinhAnhHomeStay> themAnh(List<MultipartFile> files, Long maHomeStay) throws IOException {
+    public List<HinhAnhHomeStayDTO> themAnh(List<MultipartFile> files, Long maHomeStay) throws IOException {
         HomeStay homeStay = homeStayRepository.findById(maHomeStay)
                 .orElseThrow(() ->
                         new RuntimeException("Không tìm thấy HomeStay"));
@@ -47,6 +49,13 @@ public class HinhAnhHomeStaySeviceImpl implements HinhAnhHomeStayService {
 
             hinhAnhHomeStays.add(hinhAnhHomeStay);
         }
-        return hinhAnhHomeStayRepository.saveAll(hinhAnhHomeStays);
+        List<HinhAnhHomeStay> anhHomeStayList = hinhAnhHomeStayRepository.saveAll(hinhAnhHomeStays);
+        List<HinhAnhHomeStayDTO> homeStayDTOList = new ArrayList<>();
+        for(HinhAnhHomeStay anh : anhHomeStayList){
+            HinhAnhHomeStayDTO hinhAnhHomeStayDTO = new HinhAnhHomeStayDTO();
+            BeanUtils.copyProperties(anh, hinhAnhHomeStayDTO);
+            homeStayDTOList.add(hinhAnhHomeStayDTO);
+        }
+        return homeStayDTOList;
     }
 }

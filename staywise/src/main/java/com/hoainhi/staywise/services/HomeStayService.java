@@ -15,4 +15,5 @@ public interface HomeStayService {
     void xoa(Long id);
     void ngungKinhDoanh(Long id);
     void capNhatHomeStay(Long id, HomeStayDTO dto);
+
 }

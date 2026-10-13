@@ -24,28 +24,41 @@ public class HomeStayController {
         return ResponseEntity.ok(homeStays);
     }
 
+
     @PostMapping("/save")
-    public ResponseEntity<?> themHomeStay(@Valid @RequestBody HomeStayDTO homeStayDTO){
-        try{
-            boolean themMoi = homeStayDTO.getId() == null;
+    public ResponseEntity<?> themHomeStay(
+            @Valid @RequestBody HomeStayDTO homeStayDTO) {
+
+        boolean themMoi = homeStayDTO.getId() == null;
+
+        try {
             if (themMoi) {
                 homeStayService.themHomeStay(
                         homeStayDTO,
                         homeStayDTO.getMaChuHomeStay()
                 );
+
+                return ResponseEntity
+                        .status(HttpStatus.CREATED)
+                        .body("Đăng ký HomeStay thành công, đang chờ Admin phê duyệt!");
+
             } else {
                 homeStayService.capNhatHomeStay(
                         homeStayDTO.getId(),
                         homeStayDTO
                 );
-            }
-            String message = homeStayDTO.getId() == null ? "Dang ky thanh cong, cho phe duyet" : "Cap nhat thong tin thanh cong";
-           return ResponseEntity.status(HttpStatus.CREATED).body(message);
 
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("dang ky that bai!" +   e.getMessage());
+                return ResponseEntity
+                        .ok("Cập nhật thông tin HomeStay thành công!");
+            }
+
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(e.getMessage());
         }
     }
+
 
 
 

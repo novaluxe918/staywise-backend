@@ -41,22 +41,22 @@ public class Phong {
     @Column(name = "ngaytao")
     private LocalDateTime ngayTao;
 
-    @OneToMany(mappedBy = "phong", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "phong", fetch = FetchType.LAZY)
     private List<ChiTietGiuong> chiTietGiuongs;
 
-    @OneToMany(mappedBy = "phong", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "phong", fetch = FetchType.LAZY)
     private List<SoNguoi> soNguois;
 
-    @OneToMany(mappedBy = "phong", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "phong", fetch = FetchType.LAZY)
     private List<GiaPhong> giaPhongs;
 
-    @OneToMany(mappedBy = "phong", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "phong", fetch = FetchType.LAZY)
     private List<DuDoanGia> duDoanGias;
 
-    @OneToMany(mappedBy = "phong", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "phong", fetch = FetchType.LAZY)
     private List<DatPhong> datPhongs;
 
-    @OneToMany(mappedBy = "phong", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "phong", fetch = FetchType.LAZY)
     private List<KhuyenMaiPhong> khuyenMaiPhongs;
 
 }

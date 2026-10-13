@@ -22,15 +22,7 @@ public class HinhAnhHomeStayController {
     private HinhAnhHomeStaySeviceImpl hinhAnhHomeStaySevice;
 
     @PostMapping("/upload/{maHomeStay}")
-    public ResponseEntity<?> uploadAnh(@PathVariable Long maHomeStay, @RequestParam("files")List<MultipartFile> files){
-       try{
-           List<HinhAnhHomeStay> ketQua = hinhAnhHomeStaySevice.themAnh(files, maHomeStay);
-           return ResponseEntity.status(HttpStatus.CREATED).body(ketQua);
-
-       } catch (IOException e) {
-           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Loi khi tai anh len");
-       } catch (Exception e) {
-           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-       }
+    public ResponseEntity<?> uploadAnh(@PathVariable Long maHomeStay, @RequestParam("files")List<MultipartFile> files) throws IOException{
+       return ResponseEntity.ok(hinhAnhHomeStaySevice.themAnh(files, maHomeStay));
     }
 }

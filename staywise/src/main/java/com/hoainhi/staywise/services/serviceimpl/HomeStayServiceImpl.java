@@ -145,6 +145,7 @@ public class HomeStayServiceImpl implements HomeStayService {
                 "danhSachTienIchHS",
                 "danhSachDichVuHS"
         );
+        homeStayRepository.save(homeStay);
     }
 
 
