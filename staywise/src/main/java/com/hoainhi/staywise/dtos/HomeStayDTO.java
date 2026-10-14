@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -46,7 +47,6 @@ public class HomeStayDTO {
 
     private LocalDate ngayDangKy;
 
-    private List<Long> danhSachTienIchHS;
-
-    private List<Long> danhSachDichVuHS;
+    private List<Long> danhSachTienIchHS = new ArrayList<>();
+    private List<Long> danhSachDichVuHS = new ArrayList<>();
 }

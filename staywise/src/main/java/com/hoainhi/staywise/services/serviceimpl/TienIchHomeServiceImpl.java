@@ -7,6 +7,8 @@ import com.hoainhi.staywise.services.TienIchHomeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TienIchHomeServiceImpl implements TienIchHomeService {
     @Autowired
@@ -16,6 +18,11 @@ public class TienIchHomeServiceImpl implements TienIchHomeService {
     public TienIchHomeStay themTienIchHomeStay(TienIchHomeStay tienIchHomeStay) {
 
         return tienIchHomeStayRepository.save(tienIchHomeStay);
+    }
+
+    @Override
+    public List<TienIchHomeStay> findAllById(List<Long> ids) {
+        return tienIchHomeStayRepository.findAllById(ids);
     }
 
 

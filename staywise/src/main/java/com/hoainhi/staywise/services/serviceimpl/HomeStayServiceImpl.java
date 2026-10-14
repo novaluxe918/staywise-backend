@@ -7,6 +7,7 @@ import com.hoainhi.staywise.enums.VaiTro;
 import com.hoainhi.staywise.reponsitories.HomeStayRepository;
 import com.hoainhi.staywise.reponsitories.NguoiDungRepository;
 import com.hoainhi.staywise.services.HomeStayService;
+import com.hoainhi.staywise.services.TienIchHomeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,8 +15,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class HomeStayServiceImpl implements HomeStayService {
@@ -32,8 +37,11 @@ public class HomeStayServiceImpl implements HomeStayService {
     @Autowired
     private HomeStayDichVuImpl homeStayDichVu;
 
+    @Autowired
+    private HinhAnhHomeStaySeviceImpl hinhAnhHomeStaySevice;
+
     @Override
-    public void themHomeStay(HomeStayDTO homeStayDTO, Long maChuHomeStay) {
+    public Long themHomeStay(HomeStayDTO homeStayDTO, Long maChuHomeStay) {
         HomeStay homeStay = new HomeStay();
         BeanUtils.copyProperties(homeStayDTO, homeStay);
         NguoiDung chuHomeStay = nguoiDungRepository.findByIdAndVaiTro(maChuHomeStay , VaiTro.OWNER).orElseThrow(() -> new RuntimeException("Không tìm thấy chủ HomeStay"));
@@ -41,7 +49,11 @@ public class HomeStayServiceImpl implements HomeStayService {
         homeStay.setTrangThaiHomeStay(TrangThaiHomeStay.CHO_DUYET);
         homeStay.setNgayDangKy(LocalDate.now());
         homeStayRepository.save(homeStay);
-        for(Long item : homeStayDTO.getDanhSachTienIchHS() ){
+        // co roi kiem ve no kiem danhsachtienich nao id co trong cu roi  bo di  , cai bo vo , cai ko co thi tao ham xoa di
+    List<TienIchHomeStay> tienIchHomeStayList = tienIchHomeService.findAllById(homeStayDTO.getDanhSachTienIchHS());
+      homeStay.getTienIchHomeStays().clear();
+      homeStay.getTienIchHomeStays().addAll(tienIchHomeStayList);
+for(Long item : homeStayDTO.getDanhSachTienIchHS() ){
             TienIch tienIch = new TienIch();
             tienIch.setId(item);
             TienIchHomeStay tienIchHomeStay = new TienIchHomeStay();
@@ -58,6 +70,7 @@ public class HomeStayServiceImpl implements HomeStayService {
             stayDichVu.setDichVu(dichVu);
             homeStayDichVu.themHomeStayDichVu(stayDichVu);
         }
+        return homeStay.getId();
     }
 
     @Override
@@ -146,6 +159,30 @@ public class HomeStayServiceImpl implements HomeStayService {
                 "danhSachDichVuHS"
         );
         homeStayRepository.save(homeStay);
+    }
+
+    @Override
+    @Transactional
+    public String saveHomeStay(HomeStayDTO dto, List<MultipartFile> files) throws IOException {
+        boolean themMoi = dto.getId() == null;
+        Long maHomeStay;
+        if (themMoi) {
+            maHomeStay = themHomeStay(dto, dto.getMaChuHomeStay());
+        } else {
+            maHomeStay = dto.getId();
+
+            capNhatHomeStay(maHomeStay, dto);
+        }
+
+        if (files != null && !files.isEmpty()) {
+            hinhAnhHomeStaySevice.themAnh(files, maHomeStay);
+        }
+
+        if (themMoi) {
+            return "Đăng ký HomeStay thành công, đang chờ Admin phê duyệt!";
+        }
+
+        return "Cập nhật thông tin HomeStay thành công!";
     }
 
 

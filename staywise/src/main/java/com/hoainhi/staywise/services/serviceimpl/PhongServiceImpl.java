@@ -1,13 +1,11 @@
 package com.hoainhi.staywise.services.serviceimpl;
 
 import com.hoainhi.staywise.dtos.ChiTietGiuongDTO;
-import com.hoainhi.staywise.dtos.HomeStayDTO;
 import com.hoainhi.staywise.dtos.PhongDTO;
 import com.hoainhi.staywise.entities.ChiTietGiuong;
 import com.hoainhi.staywise.entities.HomeStay;
 import com.hoainhi.staywise.entities.LoaiGiuong;
 import com.hoainhi.staywise.entities.Phong;
-import com.hoainhi.staywise.enums.TrangThai;
 import com.hoainhi.staywise.enums.TrangThaiHomeStay;
 import com.hoainhi.staywise.enums.TrangThaiPhong;
 import com.hoainhi.staywise.reponsitories.ChiTietGiuongRepository;
