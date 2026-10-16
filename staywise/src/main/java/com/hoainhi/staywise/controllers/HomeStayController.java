@@ -35,7 +35,7 @@ public class HomeStayController {
 
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> save(
-            @Valid @ModelAttribute HomeStayDTO dto,
+            @ModelAttribute HomeStayDTO dto,
             @RequestParam(value = "files", required = false)
             List<MultipartFile> files) {
 

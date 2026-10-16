@@ -1,5 +1,6 @@
 package com.hoainhi.staywise.services.serviceimpl;
 
+import com.hoainhi.staywise.dtos.DichVuDTO;
 import com.hoainhi.staywise.entities.DichVu;
 import com.hoainhi.staywise.enums.TrangThai;
 import com.hoainhi.staywise.reponsitories.DichVuRepository;
@@ -42,5 +43,28 @@ public class DichVuServiceImpl implements DichVuService {
     @Override
     public DichVu getById(Long id) {
         return dichVuRepository.findById(id).orElseThrow(() -> new RuntimeException("Khong tim thay dich vu"));
+    }
+
+    @Override
+    public String saveDichVu(DichVuDTO dichVuDTO) {
+        boolean themMoi = dichVuDTO.getId() == null;
+        if(themMoi && (dichVuDTO.getId() == null || dichVuDTO.getTenDichVu().isBlank())){
+            throw new RuntimeException("Ten divh vu khong duoc de trong");
+        }
+        DichVu dichVu;
+        if(themMoi){
+             dichVu = new DichVu();
+             dichVu.setTrangThai(TrangThai.DANG_HOAT_DONG);
+
+        }else {
+           dichVu =dichVuRepository.findById(dichVuDTO.getId()).orElseThrow(()
+                   -> new RuntimeException("Khong tim thay dich vu"));
+        }
+
+        if(dichVuDTO.getTenDichVu() != null && !dichVuDTO.getTenDichVu().isBlank()){
+            dichVu.setTenDichVu(dichVuDTO.getTenDichVu());
+        }
+        dichVuRepository.save(dichVu);
+        return themMoi ? "Them dich vu thanh cong" : "Cap nhat thong tin thanh cong";
     }
 }

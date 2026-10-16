@@ -6,6 +6,8 @@ import com.hoainhi.staywise.services.HomeStayDichVuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class HomeStayDichVuImpl implements HomeStayDichVuService {
     @Autowired
@@ -14,5 +16,10 @@ public class HomeStayDichVuImpl implements HomeStayDichVuService {
     @Override
     public HomeStayDichVu themHomeStayDichVu(HomeStayDichVu homeStayDichVu) {
         return homeStayDichVuRepository.save(homeStayDichVu);
+    }
+
+    @Override
+    public List<HomeStayDichVu> findAllById(List<Long> ids) {
+        return homeStayDichVuRepository.findAllById(ids);
     }
 }

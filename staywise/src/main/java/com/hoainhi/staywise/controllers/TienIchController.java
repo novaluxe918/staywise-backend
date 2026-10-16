@@ -38,9 +38,7 @@ public class TienIchController {
             BeanUtils.copyProperties(
                     tienIchDTO,
                     tienIch,
-                    "id",
-                    "trangThai",
-                    "theLoaiTienIch"
+                    "id"
             );
             tienIchService.themTienIch(tienIch, tienIchDTO.getMatheloai());
             String message = themMoi

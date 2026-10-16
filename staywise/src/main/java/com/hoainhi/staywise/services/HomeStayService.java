@@ -18,6 +18,6 @@ public interface HomeStayService {
     HomeStay tuChoiHomeStay(Long id, String lyDoTuChoi);
     void xoa(Long id);
     void ngungKinhDoanh(Long id);
-    void capNhatHomeStay(Long id, HomeStayDTO dto);
-    String saveHomeStay(HomeStayDTO dto , List<MultipartFile> files) throws IOException;
+    Long capNhatHomeStay(Long id, HomeStayDTO dto);
+    String saveHomeStay(HomeStayDTO dto, List<MultipartFile> files) throws IOException;
 }

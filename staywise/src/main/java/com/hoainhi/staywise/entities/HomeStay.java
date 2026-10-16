@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -69,11 +70,13 @@ public class HomeStay {
     @OneToMany(mappedBy = "homeStay", fetch = FetchType.LAZY)
     private List<HinhAnhHomeStay> homeStays;
 
-    @OneToMany(mappedBy = "homeStay", fetch = FetchType.LAZY)
-    private List<TienIchHomeStay> tienIchHomeStays;
+    @OneToMany(mappedBy = "homeStay", fetch = FetchType.LAZY,  cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<TienIchHomeStay> tienIchHomeStays = new ArrayList<>();
 
-    @OneToMany(mappedBy = "homeStay", fetch = FetchType.LAZY)
-   private List<HomeStayDichVu> homeStayDichVus;
+    @OneToMany(mappedBy = "homeStay", fetch = FetchType.LAZY,  cascade = CascadeType.ALL,
+            orphanRemoval = true)
+   private List<HomeStayDichVu> homeStayDichVus = new ArrayList<>();
 
     @OneToMany(mappedBy = "homeStay", fetch = FetchType.LAZY)
     private List<Phong> phongs;
