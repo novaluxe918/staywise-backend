@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface HomeStayDichVuRepository extends JpaRepository<HomeStayDichVu, Long> {
+    void deleteByHomeStay_Id(Long maHomeStay);
 }

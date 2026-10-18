@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface DichVuRepository extends JpaRepository<DichVu, Long> {
     Page<DichVu> findByTenDichVuContainingIgnoreCase(String tuKhoa, Pageable pageable, TrangThai trangThai);
     Page<DichVu> findByTrangThaiNot(TrangThai trangThai, Pageable pageable);
+
 }

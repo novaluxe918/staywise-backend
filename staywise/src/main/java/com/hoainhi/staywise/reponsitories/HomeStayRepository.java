@@ -11,4 +11,5 @@ import org.springframework.stereotype.Repository;
 public interface HomeStayRepository extends JpaRepository<HomeStay, Long> {
    Page<HomeStay> findByTenHomeStayContaining(String tuKhoa, Pageable pageable);
    Page<HomeStay> findByTrangThaiHomeStayNot(TrangThaiHomeStay trangThaiHomeStay, Pageable pageable);
+
 }

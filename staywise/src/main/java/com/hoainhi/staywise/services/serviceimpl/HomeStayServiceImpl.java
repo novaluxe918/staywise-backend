@@ -56,69 +56,6 @@ public class HomeStayServiceImpl implements HomeStayService {
     @Autowired
     private HomeStayDichVuRepository homeStayDichVuRepository;
 
-    @Override
-    @Transactional
-    public Long themHomeStay(HomeStayDTO homeStayDTO, Long maChuHomeStay) {
-
-        HomeStay homeStay = new HomeStay();
-        BeanUtils.copyProperties(homeStayDTO, homeStay);
-
-        NguoiDung chuHomeStay = nguoiDungRepository
-                .findByIdAndVaiTro(maChuHomeStay, VaiTro.OWNER)
-                .orElseThrow(() ->
-                        new RuntimeException("Không tìm thấy chủ HomeStay")
-                );
-
-        homeStay.setNguoiDung(chuHomeStay);
-        homeStay.setTrangThaiHomeStay(TrangThaiHomeStay.CHO_DUYET);
-        homeStay.setNgayDangKy(LocalDate.now());
-
-
-        homeStayRepository.save(homeStay);
-
-        // Thêm tiện ích
-        if (homeStayDTO.getDanhSachTienIchHS() != null) {
-
-            for (Long item : homeStayDTO.getDanhSachTienIchHS()) {
-
-                TienIch tienIch = tienIchRepository.findById(item)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Không tìm thấy tiện ích ID: " + item
-                                )
-                        );
-
-                TienIchHomeStay tienIchHomeStay = new TienIchHomeStay();
-                tienIchHomeStay.setHomeStay(homeStay);
-                tienIchHomeStay.setTienIch(tienIch);
-
-                tienIchHomeStayRepository.save(tienIchHomeStay);
-            }
-        }
-
-        // Thêm dịch vụ
-        if (homeStayDTO.getDanhSachDichVuHS() != null) {
-
-            for (Long item : homeStayDTO.getDanhSachDichVuHS()) {
-
-                DichVu dichVu = dichVuRepository.findById(item)
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Không tìm thấy dịch vụ ID: " + item
-                                )
-                        );
-
-                HomeStayDichVu stayDichVu = new HomeStayDichVu();
-                stayDichVu.setHomeStay(homeStay);
-                stayDichVu.setDichVu(dichVu);
-
-                homeStayDichVuRepository.save(stayDichVu);
-            }
-        }
-
-        return homeStay.getId();
-    }
-
 
     @Override
     public Page<HomeStayDTO> showAll(String tuKhoa, int trang, int kichThuoc) {
@@ -190,87 +127,19 @@ public class HomeStayServiceImpl implements HomeStayService {
         homeStayRepository.save(homeStay);
     }
 
-    @Override
-    @Transactional
-    public Long capNhatHomeStay(Long id, HomeStayDTO dto) {
-
-        HomeStay homeStay = homeStayRepository.findById(id)
-                .orElseThrow(() ->
-                        new RuntimeException("Không tìm thấy HomeStay!"));
-
-        if (dto.getTenHomeStay() != null) {
-            homeStay.setTenHomeStay(dto.getTenHomeStay());
-        }
-
-        if (dto.getMoTa() != null) {
-            homeStay.setMoTa(dto.getMoTa());
-        }
-
-        if (dto.getPhuongXa() != null) {
-            homeStay.setPhuongXa(dto.getPhuongXa());
-        }
-
-        if (dto.getQuanHuyen() != null) {
-            homeStay.setQuanHuyen(dto.getQuanHuyen());
-        }
-
-        if (dto.getTinhThanh() != null) {
-            homeStay.setTinhThanh(dto.getTinhThanh());
-        }
-
-        if (dto.getDiaChi() != null) {
-            homeStay.setDiaChi(dto.getDiaChi());
-        }
-
-        if (dto.getSoDienThoai() != null) {
-            homeStay.setSoDienThoai(dto.getSoDienThoai());
-        }
-
-        if (dto.getEmail() != null) {
-            homeStay.setEmail(dto.getEmail());
-        }
-
-        if (dto.getTheLoaiHomeStay() != null) {
-            homeStay.setTheLoaiHomeStay(dto.getTheLoaiHomeStay());
-        }
-
-        if (dto.getDanhSachTienIchHS() != null) {
-            homeStay.getTienIchHomeStays().clear();
-
-            for(Long item : dto.getDanhSachTienIchHS()){
-                TienIch tienIch = tienIchRepository.findById(item).orElseThrow(() -> new RuntimeException("Khong tim thay"));
-                TienIchHomeStay tienIchHomeStay = new TienIchHomeStay();
-                tienIchHomeStay.setHomeStay(homeStay);
-                tienIchHomeStay.setTienIch(tienIch);
-               homeStay.getTienIchHomeStays().add(tienIchHomeStay);
-            }
-        }
-        if (dto.getDanhSachDichVuHS() != null) {
-            homeStay.getHomeStayDichVus().clear();
-            for(Long item : dto.getDanhSachDichVuHS()){
-                DichVu dichVu = dichVuRepository.findById(item).orElseThrow(() -> new RuntimeException("Khong tim thay") );
-                HomeStayDichVu stayDichVu = new HomeStayDichVu();
-                stayDichVu.setHomeStay(homeStay);
-                stayDichVu.setDichVu(dichVu);
-                homeStay.getHomeStayDichVus().add(stayDichVu);
-            }
-        }
-
-        homeStayRepository.save(homeStay);
-
-        return homeStay.getId();
-    }
 
     @Override
     @Transactional
     public String saveHomeStay(
             HomeStayDTO dto,
-            List<MultipartFile> files) throws IOException {
-
-        Long maHomeStay;
-
-        if (dto.getId() == null) {
-            // kiểm tra validation
+            List<MultipartFile> files, Long maChuHomeStay) throws IOException {
+         boolean themMoi = dto.getId() == null;
+        NguoiDung nguoiDung = nguoiDungRepository.findByIdAndVaiTro(maChuHomeStay, VaiTro.OWNER).orElseThrow(
+                () -> new RuntimeException("Khong tim thay chu HomeStay")
+        );
+        HomeStay homeStay;
+        if (themMoi) {
+            // 1. Thêm mới HomeStay
             Set<ConstraintViolation<HomeStayDTO>> violations =
                     validator.validate(dto);
 
@@ -278,18 +147,106 @@ public class HomeStayServiceImpl implements HomeStayService {
                 throw new ConstraintViolationException(violations);
             }
 
-            maHomeStay = themHomeStay(dto, dto.getMaChuHomeStay());
+            homeStay = new HomeStay();
 
+            BeanUtils.copyProperties(dto, homeStay);
+
+            homeStay.setNguoiDung(nguoiDung);
+            homeStay.setTrangThaiHomeStay(TrangThaiHomeStay.CHO_DUYET);
+            homeStay.setNgayDangKy(LocalDate.now());
 
         } else {
+            // 2. Tìm HomeStay cần cập nhật
+            homeStay = homeStayRepository.findById(dto.getId())
+                    .orElseThrow(() ->
+                            new RuntimeException("Không tìm thấy HomeStay!"));
 
-            maHomeStay = capNhatHomeStay(dto.getId(), dto);
+            // Kiểm tra đúng chủ sở hữu
+            if (!homeStay.getNguoiDung().getId().equals(maChuHomeStay)) {
+                throw new RuntimeException(
+                        "Bạn không có quyền cập nhật HomeStay này!");
+            }
+
+            // Cập nhật thông tin
+            if (dto.getTenHomeStay() != null) {
+                homeStay.setTenHomeStay(dto.getTenHomeStay());
+            }
+
+            if (dto.getMoTa() != null) {
+                homeStay.setMoTa(dto.getMoTa());
+            }
+
+            if (dto.getPhuongXa() != null) {
+                homeStay.setPhuongXa(dto.getPhuongXa());
+            }
+
+            if (dto.getQuanHuyen() != null) {
+                homeStay.setQuanHuyen(dto.getQuanHuyen());
+            }
+
+            if (dto.getTinhThanh() != null) {
+                homeStay.setTinhThanh(dto.getTinhThanh());
+            }
+
+            if (dto.getDiaChi() != null) {
+                homeStay.setDiaChi(dto.getDiaChi());
+            }
+
+            if (dto.getSoDienThoai() != null) {
+                homeStay.setSoDienThoai(dto.getSoDienThoai());
+            }
         }
 
-        // Lưu hình ảnh nếu có
+        // 3. Lưu HomeStay
+        homeStayRepository.save(homeStay);
+
+        Long maHomeStay = homeStay.getId();
+
+        if (dto.getDanhSachTienIchHS() != null) {
+
+            // Xóa các tiện ích liên kết cũ
+            tienIchHomeStayRepository.deleteByHomeStay_Id(maHomeStay);
+
+            for (Long item : dto.getDanhSachTienIchHS()) {
+
+                TienIch tienIch = tienIchRepository.findById(item)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Không tìm thấy tiện ích " + item));
+
+                TienIchHomeStay tienIchHomeStay = new TienIchHomeStay();
+                tienIchHomeStay.setHomeStay(homeStay);
+                tienIchHomeStay.setTienIch(tienIch);
+
+                tienIchHomeStayRepository.save(tienIchHomeStay);
+            }
+        }
+
+        // Xử lý dịch vụ
+        if (dto.getDanhSachDichVuHS() != null) {
+
+            homeStayDichVuRepository.deleteByHomeStay_Id(maHomeStay);
+
+            for (Long item : dto.getDanhSachDichVuHS()) {
+
+                DichVu dichVu = dichVuRepository.findById(item)
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Không tìm thấy dịch vụ  " + item));
+
+                HomeStayDichVu stayDichVu = new HomeStayDichVu();
+                stayDichVu.setHomeStay(homeStay);
+                stayDichVu.setDichVu(dichVu);
+
+                homeStayDichVuRepository.save(stayDichVu);
+            }
+        }
+
+        // Lưu hình ảnh
         if (files != null && !files.isEmpty()) {
             hinhAnhHomeStaySevice.themAnh(files, maHomeStay);
         }
+
 
         if (dto.getId() == null) {
             return "Đăng ký HomeStay thành công, đang chờ Admin phê duyệt!";

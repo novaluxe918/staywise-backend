@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface TienIchHomeStayRepository extends JpaRepository<TienIchHomeStay, Long> {
     List<TienIchHomeStay> findByHomeStay(HomeStay homeStay);
+    void deleteByHomeStay_Id(Long maHomeStay);
 }

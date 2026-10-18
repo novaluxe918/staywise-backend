@@ -11,13 +11,11 @@ import java.util.List;
 
 @Service
 public interface HomeStayService {
-    Long themHomeStay(HomeStayDTO homeStayDTO , Long maChuHomeStay);
     Page<HomeStayDTO> showAll(String tuKhoa, int trang, int kichThuoc);
     HomeStay getById(Long id);
     HomeStay duyetHomeStay(Long id);
     HomeStay tuChoiHomeStay(Long id, String lyDoTuChoi);
     void xoa(Long id);
     void ngungKinhDoanh(Long id);
-    Long capNhatHomeStay(Long id, HomeStayDTO dto);
-    String saveHomeStay(HomeStayDTO dto, List<MultipartFile> files) throws IOException;
+    String saveHomeStay(HomeStayDTO dto, List<MultipartFile> files, Long maChuHomeStay) throws IOException;
 }
