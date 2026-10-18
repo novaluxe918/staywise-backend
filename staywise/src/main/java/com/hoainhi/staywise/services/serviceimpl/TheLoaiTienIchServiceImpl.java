@@ -25,10 +25,6 @@ public class TheLoaiTienIchServiceImpl implements TheLoaiTienIchService {
     @Autowired
     private CloudinaryService cloudinaryService;
 
-    @Override
-    public TheLoaiTienIch themTheLoai(TheLoaiTienIch theLoaiTienIch) {
-        return theLoaiTienIchRepository.save(theLoaiTienIch);
-    }
 
     @Override
     public Page<TheLoaiTienIch> timKiem(String tuKhoa, int trang, int kichThuoc) {

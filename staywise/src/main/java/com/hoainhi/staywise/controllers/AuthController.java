@@ -2,6 +2,7 @@ package com.hoainhi.staywise.controllers;
 
 import com.hoainhi.staywise.dtos.DangKyDTO;
 import com.hoainhi.staywise.dtos.DangNhapDTO;
+import com.hoainhi.staywise.dtos.DangNhapResponse;
 import com.hoainhi.staywise.entities.NguoiDung;
 import com.hoainhi.staywise.services.serviceimpl.AuthServiceImpl;
 import jakarta.validation.Valid;
@@ -33,8 +34,8 @@ public class AuthController {
     @PostMapping("/dangNhap")
     public ResponseEntity<?> dangNhap(@RequestBody DangNhapDTO dangNhapDTO){
         try{
-            NguoiDung nguoiDung = authService.dangNhap(dangNhapDTO);
-            return ResponseEntity.ok().body("Dang nhap thanh cong!");
+            DangNhapResponse dangNhapResponse = authService.dangNhap(dangNhapDTO);
+            return ResponseEntity.ok(dangNhapResponse);
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)

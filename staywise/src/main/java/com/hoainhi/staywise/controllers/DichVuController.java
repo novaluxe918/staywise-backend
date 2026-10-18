@@ -1,10 +1,16 @@
 package com.hoainhi.staywise.controllers;
 
 import com.hoainhi.staywise.dtos.DichVuDTO;
+import com.hoainhi.staywise.dtos.TheLoaiTienTichDTO;
 import com.hoainhi.staywise.entities.DichVu;
 import com.hoainhi.staywise.enums.TrangThai;
 import com.hoainhi.staywise.services.serviceimpl.DichVuServiceImpl;
+import com.hoainhi.staywise.validations.CapNhat;
+import com.hoainhi.staywise.validations.ThemMoi;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
+import jakarta.validation.Validator;
+import jakarta.validation.groups.Default;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,11 +20,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Set;
+
 @Controller
 @RequestMapping("/dichVu")
 public class DichVuController {
     @Autowired
     private DichVuServiceImpl dichVuService;
+
+    @Autowired
+    private Validator validator;
 
     @GetMapping("")
     public ResponseEntity<?> showAll( @RequestParam(defaultValue = "") String tuKhoa,
@@ -28,24 +40,23 @@ public class DichVuController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<?> themDichVu(@Valid @RequestBody DichVuDTO dichVuDTO){
-        try{
-            boolean themMoi = dichVuDTO.getId() == null;
-            DichVu dichVu;
-           if(themMoi){
-               dichVu = new DichVu();
-               dichVu.setTrangThai(TrangThai.DANG_HOAT_DONG);
-           } else {
-             dichVu =  dichVuService.getById(dichVuDTO.getId());
+    public ResponseEntity<?> themDichVu(@ModelAttribute DichVuDTO dichVuDTO){
+        Class<?> group = dichVuDTO.getId() == null
+                ? ThemMoi.class
+                : CapNhat.class;
+        Set<ConstraintViolation<DichVuDTO>> errors =
+                validator.validate(dichVuDTO, Default.class, group);
 
-           }
-           BeanUtils.copyProperties(dichVuDTO, dichVu, "id", "trangThai");
-           dichVuService.themDichVu(dichVu);
-           String message = dichVuDTO.getId() == null ? "Them thanh cong!" : "Sua thanh cong";
-           return ResponseEntity.ok(message);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        if (!errors.isEmpty()) {
+            List<String> messages = errors.stream()
+                    .map(ConstraintViolation::getMessage)
+                    .toList();
+
+            return ResponseEntity.badRequest().body(messages);
         }
+
+        String message = dichVuService.saveDichVu(dichVuDTO);
+        return ResponseEntity.ok(message);
 
     }
 

@@ -16,10 +16,6 @@ import org.springframework.stereotype.Service;
 public class DichVuServiceImpl implements DichVuService {
     @Autowired
     private DichVuRepository dichVuRepository;
-    @Override
-    public DichVu themDichVu(DichVu dichVu) {
-        return dichVuRepository.save(dichVu);
-    }
 
     @Override
     public Page<DichVu> timKiem(String tuKhoa, int trang, int kichThuoc) {
@@ -48,9 +44,10 @@ public class DichVuServiceImpl implements DichVuService {
     @Override
     public String saveDichVu(DichVuDTO dichVuDTO) {
         boolean themMoi = dichVuDTO.getId() == null;
-        if(themMoi && (dichVuDTO.getId() == null || dichVuDTO.getTenDichVu().isBlank())){
+        if(themMoi && (dichVuDTO.getTenDichVu() == null || dichVuDTO.getTenDichVu().isBlank())){
             throw new RuntimeException("Ten divh vu khong duoc de trong");
         }
+
         DichVu dichVu;
         if(themMoi){
              dichVu = new DichVu();

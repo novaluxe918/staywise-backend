@@ -2,10 +2,12 @@ package com.hoainhi.staywise.services.serviceimpl;
 
 import com.hoainhi.staywise.dtos.DangKyDTO;
 import com.hoainhi.staywise.dtos.DangNhapDTO;
+import com.hoainhi.staywise.dtos.DangNhapResponse;
 import com.hoainhi.staywise.entities.NguoiDung;
 import com.hoainhi.staywise.enums.TrangThaiUser;
 import com.hoainhi.staywise.enums.VaiTro;
 import com.hoainhi.staywise.reponsitories.NguoiDungRepository;
+import com.hoainhi.staywise.security.JwtService;
 import com.hoainhi.staywise.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +22,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtService jwtService;
 
     @Override
     public NguoiDung dangKy(DangKyDTO dangKyDTO) {
@@ -43,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public NguoiDung dangNhap(DangNhapDTO dangNhapDTO) {
+    public DangNhapResponse dangNhap(DangNhapDTO dangNhapDTO) {
         NguoiDung nguoiDung = nguoiDungRepository.findByEmail(dangNhapDTO.getEmail()).orElseThrow(() -> new RuntimeException("Email hoặc mật khẩu không chính xác!"));
         if(!passwordEncoder.matches(dangNhapDTO.getMatKhau(), nguoiDung.getMatKhau())){
             throw new RuntimeException("Email hoặc mật khẩu không chính xác!");
@@ -52,6 +57,13 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Tai khoan khong hoat dong!");
 
         }
-        return nguoiDung;
+        String token = jwtService.taoToken(nguoiDung.getEmail());
+
+      return new DangNhapResponse(
+              token,
+              nguoiDung.getId(),
+              nguoiDung.getEmail(),
+              nguoiDung.getVaiTro().name()
+      );
     }
 }
