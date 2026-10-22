@@ -8,6 +8,7 @@ import lombok.Data;
 public class TheLoaiTienTichDTO {
 
     private Long id;
+
     @NotBlank(message = "Không được để trống", groups = ThemMoi.class)
     private String tenTheLoai;
 

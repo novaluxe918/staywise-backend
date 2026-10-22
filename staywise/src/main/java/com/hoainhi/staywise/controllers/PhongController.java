@@ -4,10 +4,12 @@ import com.hoainhi.staywise.dtos.PhongDTO;
 import com.hoainhi.staywise.entities.Phong;
 import com.hoainhi.staywise.services.PhongService;
 import com.hoainhi.staywise.services.serviceimpl.PhongServiceImpl;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -25,23 +27,17 @@ public class PhongController {
         return ResponseEntity.ok(phongs);
     }
 
-    @PostMapping("/save")
-    public ResponseEntity<?> themPhong(@Valid @RequestBody PhongDTO dto){
-        boolean themMoi = dto.getId() == null;
-        try{
-            if(themMoi){
-                phongService.themPhong(dto);
-                return ResponseEntity.ok().body("Them thanh cong");
-            } else {
-                phongService.capNhatPhong(dto.getId(), dto);
-                return ResponseEntity
-                        .ok("Cập nhật thông tin thành công!");
-            }
+    @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> themPhong( @ModelAttribute PhongDTO dto){
+        try {
+            String message = phongService.savePhong(dto);
+            return ResponseEntity.ok(message);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest()
-                    .body(e.getMessage());
+        } catch (ConstraintViolationException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

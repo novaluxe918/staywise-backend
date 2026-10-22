@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -41,11 +42,12 @@ public class Phong {
     @Column(name = "ngaytao")
     private LocalDateTime ngayTao;
 
-    @OneToMany(mappedBy = "phong", fetch = FetchType.LAZY)
-    private List<ChiTietGiuong> chiTietGiuongs;
+    @OneToMany(mappedBy = "phong", cascade = CascadeType.ALL,
+            orphanRemoval = true,  fetch = FetchType.LAZY)
+    private List<ChiTietGiuong> chiTietGiuongs = new ArrayList<>();
 
     @OneToMany(mappedBy = "phong", fetch = FetchType.LAZY)
-    private List<SoNguoi> soNguois;
+    private List<SoNguoi> soNguois = new ArrayList<>();
 
     @OneToMany(mappedBy = "phong", fetch = FetchType.LAZY)
     private List<GiaPhong> giaPhongs;

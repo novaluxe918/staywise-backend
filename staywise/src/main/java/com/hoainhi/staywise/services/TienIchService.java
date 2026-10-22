@@ -1,5 +1,6 @@
 package com.hoainhi.staywise.services;
 
+import com.hoainhi.staywise.dtos.TienIchDTO;
 import com.hoainhi.staywise.entities.TienIch;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -12,4 +13,5 @@ public interface TienIchService {
     Page<TienIch> timKiemTienIch(String tuKhoa, int trang, int kichThuoc);
     void xoa(Long id);
     Optional<TienIch> findById(Long id);
+    String saveTienIch(TienIchDTO tienIchDTO);
 }

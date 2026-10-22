@@ -30,7 +30,7 @@ public class HomeStayDTO {
     @NotBlank(message = "Quận/Huyện không được để trống", groups = ThemMoi.class)
     private String quanHuyen;
 
-    @NotBlank(message = "Tỉnh/Thành phố không được để trống")
+    @NotBlank(message = "Tỉnh/Thành phố không được để trống", groups = ThemMoi.class)
     private String tinhThanh;
 
     @NotBlank(message = "Địa chỉ không được để trống", groups = ThemMoi.class)

@@ -11,8 +11,9 @@ import java.util.List;
 
 @Service
 public interface PhongService {
-    Phong themPhong(PhongDTO dto);
+
     Page<PhongDTO> showAll(String tuKhoa, int trang, int kichThuoc);
     void xoa(Long id);
-    void capNhatPhong(Long id, PhongDTO dto);
+
+    String savePhong(PhongDTO phongDTO);
 }
