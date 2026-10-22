@@ -100,10 +100,15 @@ public class PhongServiceImpl implements PhongService {
 
 
 
+
     @Override
     @Transactional
     public String savePhong(PhongDTO phongDTO) {
-         boolean themMoi = phongDTO.getId() == null;
+
+
+        boolean themMoi = phongDTO.getId() == null;
+
+        //validation
         Set<ConstraintViolation<PhongDTO>> violations =
                 themMoi
                         ? validator.validate(phongDTO, ThemMoi.class)
@@ -118,43 +123,64 @@ public class PhongServiceImpl implements PhongService {
         }
 
         Phong phong;
-         if(themMoi){
-             phong = new Phong();
-             HomeStay homeStay = homeStayRepository.findById(phongDTO.getMaHomeStay()).orElseThrow(
-                     () -> new RuntimeException("Khong tim thay homestay")
-             );
 
-             if(homeStay.getTrangThaiHomeStay() != TrangThaiHomeStay.DA_DUYET){
-                 throw new RuntimeException(
-                         "HomeStay chưa được duyệt hoặc không còn hoạt động!");
+        if (themMoi) {
+            phong = new Phong();
 
-             }
-             phong.setHomeStay(homeStay);
-             phong.setTrangThaiPhong(TrangThaiPhong.HOAT_DONG);
-             phong.setNgayTao(LocalDateTime.now());
+            HomeStay homeStay = homeStayRepository
+                    .findById(phongDTO.getMaHomeStay())
+                    .orElseThrow(() ->
+                            new RuntimeException("Không tìm thấy homestay"));
 
-         } else {
-             phong = phongRepository.findById(phongDTO.getId()).orElseThrow(() -> new RuntimeException("Khong tim thay phong"));
-         }
+            if (homeStay.getTrangThaiHomeStay()
+                    != TrangThaiHomeStay.DA_DUYET) {
+                throw new RuntimeException(
+                        "HomeStay chưa được duyệt hoặc không còn hoạt động!");
+            }
 
-        BeanUtils.copyProperties(
-                phongDTO,
-                phong,
-                "id",
-                "maHomeStay",
-                "trangThaiPhong",
-                "ngayTao",
-                "danhSachGiuong"
-        );
+            phong.setHomeStay(homeStay);
+            phong.setTrangThaiPhong(TrangThaiPhong.HOAT_DONG);
+            phong.setNgayTao(LocalDateTime.now());
+
+
+        } else {
+            phong = phongRepository.findById(phongDTO.getId())
+                    .orElseThrow(() ->
+                            new RuntimeException("Không tìm thấy phòng"));
+        }
+
+        if (phongDTO.getTenPhong() != null) {
+            phong.setTenPhong(phongDTO.getTenPhong());
+        }
+
+        if (phongDTO.getMoTa() != null) {
+            phong.setMoTa(phongDTO.getMoTa());
+        }
+
+        if (phongDTO.getDienTich() != null) {
+            phong.setDienTich(phongDTO.getDienTich());
+        }
+
+        if (phongDTO.getLoaiPhong() != null) {
+            phong.setLoaiPhong(phongDTO.getLoaiPhong());
+        }
+
         if (phongDTO.getDanhSachGiuong() != null) {
+
+            if (phong.getChiTietGiuongs() == null) {
+                phong.setChiTietGiuongs(new ArrayList<>());
+            }
+
             phong.getChiTietGiuongs().clear();
 
-            for (ChiTietGiuongDTO item : phongDTO.getDanhSachGiuong()) {
+            for (ChiTietGiuongDTO item :
+                    phongDTO.getDanhSachGiuong()) {
 
                 LoaiGiuong loaiGiuong = loaiGiuongRepository
                         .findById(item.getMaLoaiGiuong())
                         .orElseThrow(() ->
-                                new RuntimeException("Không tìm thấy loại giường"));
+                                new RuntimeException(
+                                        "Không tìm thấy loại giường"));
 
                 ChiTietGiuong chiTiet = new ChiTietGiuong();
                 chiTiet.setPhong(phong);
@@ -164,21 +190,35 @@ public class PhongServiceImpl implements PhongService {
                 phong.getChiTietGiuongs().add(chiTiet);
             }
         }
-        phongRepository.save(phong);
-        if(phongDTO.getDanhSachSoNguoi() != null){
-            List<SoNguoi> danhSach = soNguoiRepository.findByPhong_Id(phong.getId());
-            soNguoiRepository.deleteAll(danhSach);
-            for(SoNguoiDTO item : phongDTO.getDanhSachSoNguoi()){
+
+
+        phong = phongRepository.saveAndFlush(phong);
+
+
+        if (phongDTO.getDanhSachSoNguoi() != null) {
+
+            List<SoNguoi> danhSachCu =
+                    soNguoiRepository.findByPhong_Id(phong.getId());
+
+            soNguoiRepository.deleteAll(danhSachCu);
+
+            for (SoNguoiDTO item :
+                    phongDTO.getDanhSachSoNguoi()) {
+
                 SoNguoi soNguoi = new SoNguoi();
                 soNguoi.setPhong(phong);
                 soNguoi.setSoLuong(item.getSoLuong());
                 soNguoi.setTheLoaiNguoi(item.getTheLoaiNguoi());
-                soNguoiRepository.save(soNguoi);
 
+                soNguoiRepository.save(soNguoi);
             }
         }
-         return themMoi ? "Them thong tin thanh cong" : "Cap nhat thong tin thanh cong";
+
+        return themMoi
+                ? "Thêm thông tin phòng thành công"
+                : "Cập nhật thông tin phòng thành công";
     }
+
 
 
 
