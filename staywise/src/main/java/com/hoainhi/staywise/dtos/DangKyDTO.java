@@ -17,7 +17,6 @@ public class DangKyDTO {
     private String email;
 
     @NotBlank(message = " Mật khẩu khong được để trống")
-    @Size(min = 6, max = 8, message = "Mật khẩu phải từ 6 đến 8 ký tự")
     private String matKhau;
 
     @NotBlank(message = "Xác nhận mật khẩu không được để trống")
@@ -30,4 +29,5 @@ public class DangKyDTO {
     )
     private String soDienThoai;
 
+    private VaiTro vaiTro;
 }

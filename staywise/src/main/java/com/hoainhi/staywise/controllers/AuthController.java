@@ -12,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.Map;
 
 @Controller
 @RequestMapping("/auth")
@@ -41,5 +44,22 @@ public class AuthController {
                     .status(HttpStatus.BAD_REQUEST)
                     .body(e.getMessage());
         }
+    }
+
+    public ResponseEntity<?> dangXuat(
+            @RequestHeader(value = "Authorization", required = false, defaultValue="Authorization")
+            String authorization){
+        if(authorization == null || !authorization.startsWith("Bearer ")){
+
+            return ResponseEntity.status(401)
+                    .body(Map.of(
+                            "message", "Token không hợp lệ"
+                    ));
+        }
+        String token = authorization.substring(7);
+        authService.dangXuat(token);
+        return ResponseEntity.ok(
+                Map.of("message", "Đăng xuất thành công")
+        );
     }
 }

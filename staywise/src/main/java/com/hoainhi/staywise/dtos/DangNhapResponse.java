@@ -12,4 +12,6 @@ public class DangNhapResponse {
     private Long id;
     private String email;
     private String vaiTro;
+
+    private String hoTen;
 }

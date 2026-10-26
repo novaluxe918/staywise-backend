@@ -4,9 +4,11 @@ import com.hoainhi.staywise.dtos.DangKyDTO;
 import com.hoainhi.staywise.dtos.DangNhapDTO;
 import com.hoainhi.staywise.dtos.DangNhapResponse;
 import com.hoainhi.staywise.entities.NguoiDung;
+import com.hoainhi.staywise.entities.TokenDaThuHoi;
 import com.hoainhi.staywise.enums.TrangThaiUser;
 import com.hoainhi.staywise.enums.VaiTro;
 import com.hoainhi.staywise.reponsitories.NguoiDungRepository;
+import com.hoainhi.staywise.reponsitories.TokenDaThuHoiRepository;
 import com.hoainhi.staywise.security.JwtService;
 import com.hoainhi.staywise.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ import java.time.LocalDateTime;
 public class AuthServiceImpl implements AuthService {
     @Autowired
     private NguoiDungRepository nguoiDungRepository;
+
+    @Autowired
+    private TokenDaThuHoiRepository tokenDaThuHoiRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -36,13 +41,19 @@ public class AuthServiceImpl implements AuthService {
             throw new RuntimeException("Mật khẩu xác nhận không khớp!");
         }
 
-        NguoiDung nguoiDung = new NguoiDung();
+        VaiTro vaiTro = dangKyDTO.getVaiTro();
+         if(vaiTro == null || (vaiTro != VaiTro.USER && vaiTro != VaiTro.OWNER)){
+              throw new RuntimeException("Vai tro dang ky khong hop le");
+
+         }
+
+         NguoiDung nguoiDung = new NguoiDung();
         nguoiDung.setHoTen(dangKyDTO.getHoTen());
         nguoiDung.setEmail(dangKyDTO.getEmail());
         nguoiDung.setSoDienThoai(dangKyDTO.getSoDienThoai());
+        nguoiDung.setVaiTro(vaiTro);
         nguoiDung.setMatKhau(passwordEncoder.encode(dangKyDTO.getMatKhau()));
         nguoiDung.setTrangThaiUser(TrangThaiUser.DANG_HOAT_DONG);
-        nguoiDung.setVaiTro(VaiTro.USER);
         nguoiDung.setNgayTao(LocalDateTime.now());
         return nguoiDungRepository.save(nguoiDung);
     }
@@ -63,7 +74,22 @@ public class AuthServiceImpl implements AuthService {
               token,
               nguoiDung.getId(),
               nguoiDung.getEmail(),
-              nguoiDung.getVaiTro().name()
+              nguoiDung.getVaiTro().name(),
+              nguoiDung.getHoTen()
       );
+    }
+
+    @Override
+    public void dangXuat(String token) {
+        if(tokenDaThuHoiRepository.existsByToken(token)){
+            return;
+        }
+
+        LocalDateTime ngayHetHan = jwtService.layThoiDiemHetHan(token);
+        TokenDaThuHoi tokenDaThuHoi = new TokenDaThuHoi();
+        tokenDaThuHoi.setToken(token);
+        tokenDaThuHoi.setNgayHetHan(ngayHetHan);
+
+        tokenDaThuHoiRepository.save(tokenDaThuHoi);
     }
 }
