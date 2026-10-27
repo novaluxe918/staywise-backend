@@ -35,8 +35,6 @@ public class HomeStay {
     @Column(name = "phuongXa",nullable = false)
     private String phuongXa;
 
-    @Column(name = "quanHuyen",nullable = false)
-    private String quanHuyen;
 
     @Column(name = "tinhThanh",nullable = false)
     private String tinhThanh;

@@ -27,8 +27,6 @@ public class HomeStayDTO {
     @NotBlank(message = "Phường/Xã không được để trống", groups = ThemMoi.class)
     private String phuongXa;
 
-    @NotBlank(message = "Quận/Huyện không được để trống", groups = ThemMoi.class)
-    private String quanHuyen;
 
     @NotBlank(message = "Tỉnh/Thành phố không được để trống", groups = ThemMoi.class)
     private String tinhThanh;

@@ -180,9 +180,6 @@ public class HomeStayServiceImpl implements HomeStayService {
                 homeStay.setPhuongXa(dto.getPhuongXa());
             }
 
-            if (dto.getQuanHuyen() != null) {
-                homeStay.setQuanHuyen(dto.getQuanHuyen());
-            }
 
             if (dto.getTinhThanh() != null) {
                 homeStay.setTinhThanh(dto.getTinhThanh());

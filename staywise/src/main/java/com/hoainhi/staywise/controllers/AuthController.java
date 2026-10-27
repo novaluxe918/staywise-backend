@@ -46,6 +46,7 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/logout")
     public ResponseEntity<?> dangXuat(
             @RequestHeader(value = "Authorization", required = false, defaultValue="Authorization")
             String authorization){
