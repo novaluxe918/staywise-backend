@@ -59,7 +59,7 @@ public class SecurityConfig {
 
         http
                 .csrf(csrf -> csrf.disable())
-
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 // Không sử dụng session để lưu trạng thái đăng nhập
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(
@@ -69,7 +69,7 @@ public class SecurityConfig {
 
                         // API đăng nhập và đăng ký được truy cập công khai
                         .requestMatchers("/auth/**").permitAll()
-
+                        .requestMatchers("/hanh-chinh/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         // Các API còn lại yêu cầu đăng nhập
