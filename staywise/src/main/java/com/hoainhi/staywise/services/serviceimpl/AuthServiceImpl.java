@@ -4,11 +4,9 @@ import com.hoainhi.staywise.dtos.DangKyDTO;
 import com.hoainhi.staywise.dtos.DangNhapDTO;
 import com.hoainhi.staywise.dtos.DangNhapResponse;
 import com.hoainhi.staywise.entities.NguoiDung;
-import com.hoainhi.staywise.entities.TokenDaThuHoi;
 import com.hoainhi.staywise.enums.TrangThaiUser;
 import com.hoainhi.staywise.enums.VaiTro;
 import com.hoainhi.staywise.reponsitories.NguoiDungRepository;
-import com.hoainhi.staywise.reponsitories.TokenDaThuHoiRepository;
 import com.hoainhi.staywise.security.JwtService;
 import com.hoainhi.staywise.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +19,6 @@ import java.time.LocalDateTime;
 public class AuthServiceImpl implements AuthService {
     @Autowired
     private NguoiDungRepository nguoiDungRepository;
-
-    @Autowired
-    private TokenDaThuHoiRepository tokenDaThuHoiRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -79,17 +74,5 @@ public class AuthServiceImpl implements AuthService {
       );
     }
 
-    @Override
-    public void dangXuat(String token) {
-        if(tokenDaThuHoiRepository.existsByToken(token)){
-            return;
-        }
 
-        LocalDateTime ngayHetHan = jwtService.layThoiDiemHetHan(token);
-        TokenDaThuHoi tokenDaThuHoi = new TokenDaThuHoi();
-        tokenDaThuHoi.setToken(token);
-        tokenDaThuHoi.setNgayHetHan(ngayHetHan);
-
-        tokenDaThuHoiRepository.save(tokenDaThuHoi);
-    }
 }

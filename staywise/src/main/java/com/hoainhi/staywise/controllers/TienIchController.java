@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
-@Controller
+@RestController
 @RequestMapping("/tienich")
 public class TienIchController {
     @Autowired

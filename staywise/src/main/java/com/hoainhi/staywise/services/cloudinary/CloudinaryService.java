@@ -29,7 +29,12 @@ public class CloudinaryService {
 
         Map<?, ?> ketQua = cloudinary.uploader().upload(
                 file.getBytes(),
-                ObjectUtils.emptyMap()
+                ObjectUtils.asMap(
+                        "folder", "staywise/homestay",
+                        "resource_type", "image",
+                        "quality", "auto",
+                        "fetch_format", "auto"
+                )
         );
 
         return ketQua.get("secure_url").toString();

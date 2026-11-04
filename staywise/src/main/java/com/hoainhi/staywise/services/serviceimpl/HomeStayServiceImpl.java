@@ -6,6 +6,7 @@ import com.hoainhi.staywise.enums.TrangThaiHomeStay;
 import com.hoainhi.staywise.enums.VaiTro;
 import com.hoainhi.staywise.reponsitories.*;
 import com.hoainhi.staywise.services.HomeStayService;
+import com.hoainhi.staywise.services.cloudinary.CloudinaryService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -56,6 +57,8 @@ public class HomeStayServiceImpl implements HomeStayService {
     @Autowired
     private HomeStayDichVuRepository homeStayDichVuRepository;
 
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     @Override
     public Page<HomeStayDTO> showAll(String tuKhoa, int trang, int kichThuoc) {
@@ -128,12 +131,13 @@ public class HomeStayServiceImpl implements HomeStayService {
     }
 
 
+
     @Override
     @Transactional
     public String saveHomeStay(
             HomeStayDTO dto,
             List<MultipartFile> files, Long maChuHomeStay) throws IOException {
-         boolean themMoi = dto.getId() == null;
+        boolean themMoi = dto.getId() == null;
         NguoiDung nguoiDung = nguoiDungRepository.findByIdAndVaiTro(maChuHomeStay, VaiTro.OWNER).orElseThrow(
                 () -> new RuntimeException("Khong tim thay chu HomeStay")
         );
@@ -251,5 +255,6 @@ public class HomeStayServiceImpl implements HomeStayService {
 
         return "Cập nhật thông tin HomeStay thành công!";
     }
+
 
 }

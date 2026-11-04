@@ -2,6 +2,7 @@
 package com.hoainhi.staywise.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
@@ -68,12 +69,20 @@ public class JwtService {
     }
 
     public LocalDateTime layThoiDiemHetHan(String token) {
-        Date expiration = Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .getExpiration();
+
+        Date expiration;
+
+        try {
+            expiration = Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload()
+                    .getExpiration();
+
+        } catch (ExpiredJwtException e) {
+            expiration = e.getClaims().getExpiration();
+        }
 
         return expiration.toInstant()
                 .atZone(ZoneId.systemDefault())

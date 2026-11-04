@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-
 @Data
 public class TienIchDTO {
     private Long id;
@@ -22,3 +21,4 @@ public class TienIchDTO {
     private Long matheloai;
 
 }
+

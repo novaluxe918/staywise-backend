@@ -4,12 +4,11 @@ import com.hoainhi.staywise.dtos.HomeStayDTO;
 import com.hoainhi.staywise.entities.NguoiDung;
 import com.hoainhi.staywise.enums.VaiTro;
 import com.hoainhi.staywise.reponsitories.NguoiDungRepository;
+import com.hoainhi.staywise.services.serviceimpl.GiayToChuNhaServiceImpl;
 import com.hoainhi.staywise.services.serviceimpl.HinhAnhHomeStaySeviceImpl;
 import com.hoainhi.staywise.services.serviceimpl.HomeStayServiceImpl;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -17,7 +16,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/homestay")
@@ -30,6 +32,9 @@ public class HomeStayController {
 
     @Autowired
     private NguoiDungRepository nguoiDungRepository;
+
+    @Autowired
+    private GiayToChuNhaServiceImpl giayToChuNhaService;
 
     @GetMapping("/timKiem")
     public ResponseEntity<?> showAllHomeStay(@RequestParam(defaultValue = "") String tuKhoa,
@@ -44,7 +49,8 @@ public class HomeStayController {
     public ResponseEntity<?> save(
             @ModelAttribute HomeStayDTO dto,
             @RequestParam(value = "files", required = false)
-            List<MultipartFile> files, Authentication authentication) {
+            List<MultipartFile> files, Authentication authentication
+           ) {
 
         try {
             if(authentication == null || !authentication.isAuthenticated()){
@@ -58,8 +64,16 @@ public class HomeStayController {
             if(chuHomeStay.getVaiTro() != VaiTro.OWNER){
                 return ResponseEntity.status(403).body("Ban khong co quyen dang ky homestay");
             }
+
+
               Long maChuHomeStay = chuHomeStay.getId();
-            String message = homeStayService.saveHomeStay(dto, files, maChuHomeStay);
+
+            String message = homeStayService.saveHomeStay(
+                    dto,
+                    files,
+                    maChuHomeStay
+            );
+
             return ResponseEntity.ok(message);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -68,4 +82,5 @@ public class HomeStayController {
 
 
 
-}
+
+    }

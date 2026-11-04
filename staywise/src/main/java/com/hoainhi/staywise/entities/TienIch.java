@@ -17,7 +17,7 @@ public class TienIch {
     @Column(name = "matienich")
     private Long id;
 
-    @Column(name = "tenTienIch",columnDefinition = "varchar(100)")
+    @Column(name = "ten_tien_ich")
     private String tenTienIch;
 
     @Column(name = "moTa",columnDefinition = "text")

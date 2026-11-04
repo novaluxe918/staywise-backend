@@ -10,5 +10,4 @@ import org.springframework.stereotype.Service;
 public interface AuthService {
   NguoiDung dangKy(DangKyDTO dangKyDTO);
   DangNhapResponse dangNhap(DangNhapDTO dangNhapDTO);
-  void dangXuat(String token);
 }

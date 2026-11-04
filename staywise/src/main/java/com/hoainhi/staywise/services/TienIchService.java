@@ -9,7 +9,6 @@ import java.util.Optional;
 
 @Service
 public interface TienIchService {
-    TienIch themTienIch(TienIch tienIch, Long maTheLoai);
     Page<TienIch> timKiemTienIch(String tuKhoa, int trang, int kichThuoc);
     void xoa(Long id);
     Optional<TienIch> findById(Long id);

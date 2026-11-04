@@ -6,6 +6,7 @@ import com.hoainhi.staywise.reponsitories.NguoiDungRepository;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -37,16 +38,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain)
             throws ServletException, IOException {
 
-        // 1. Lấy token từ Header Authorization
-        String authHeader = request.getHeader("Authorization");
+        // 1. Lấy token từ HttpOnly Cookie
+        String token = layTokenTuCookie(request);
 
-        // Không có token thì chuyển request sang filter tiếp theo
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        // Không có cookie token -> cho qua filter tiếp theo (Spring Security sẽ chặn nếu route yêu cầu đăng nhập)
+        if (token == null) {
             filterChain.doFilter(request, response);
             return;
         }
-
-        String token = authHeader.substring(7);
 
         try {
             // 2. Kiểm tra token hợp lệ và còn hạn
@@ -59,8 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String email = jwtService.layEmailTuToken(token);
 
             // 4. Chỉ xác thực nếu request chưa có Authentication
-            if (SecurityContextHolder.getContext()
-                    .getAuthentication() == null) {
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
                 NguoiDung nguoiDung = nguoiDungRepository
                         .findByEmail(email)
@@ -75,14 +73,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         return;
                     }
 
-                    // 6. Đưa vai trò vào Spring Security
+                    // 6. Đưa vai trò vào Spring Security (đảm bảo prefix ROLE_ nếu dùng hasRole)
                     var authorities = List.of(
                             new SimpleGrantedAuthority(
                                     "ROLE_" + nguoiDung.getVaiTro().name()
                             )
                     );
 
-                    // Principal là email của người đang đăng nhập
                     UsernamePasswordAuthenticationToken authentication =
                             new UsernamePasswordAuthenticationToken(
                                     nguoiDung.getEmail(),
@@ -91,24 +88,36 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             );
 
                     authentication.setDetails(
-                            new WebAuthenticationDetailsSource()
-                                    .buildDetails(request)
+                            new WebAuthenticationDetailsSource().buildDetails(request)
                     );
 
-                    // 7. Lưu thông tin xác thực
-                    SecurityContextHolder.getContext()
-                            .setAuthentication(authentication);
+                    // 7. Lưu thông tin xác thực vào context
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             }
 
-        } catch (io.jsonwebtoken.JwtException
-                 | IllegalArgumentException e) {
-            // Token sai chữ ký, hết hạn hoặc không hợp lệ:
-            // không xác thực người dùng.
+        } catch (io.jsonwebtoken.JwtException | IllegalArgumentException e) {
+            // Token sai chữ ký, hết hạn hoặc bị can thiệp
             SecurityContextHolder.clearContext();
         }
 
         // 8. Tiếp tục chuỗi filter
         filterChain.doFilter(request, response);
+    }
+
+    /**
+     * Hàm phụ trợ: duyệt qua danh sách cookie trong request để lấy giá trị access_token
+     */
+    private String layTokenTuCookie(HttpServletRequest request) {
+        if (request.getCookies() == null) {
+            return null;
+        }
+
+        for (Cookie cookie : request.getCookies()) {
+            if ("access_token".equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+        return null;
     }
 }

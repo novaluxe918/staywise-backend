@@ -34,17 +34,7 @@ public class TienIchServiceImpl implements TienIchService {
 
     @Autowired
     private TheLoaiTienIchRepository theLoaiTienIchRepository;
-    @Override
-    public TienIch themTienIch(TienIch tienIch, Long maTheLoai) {
-        TheLoaiTienIch theLoai = theLoaiTienIchRepository
-                .findById(maTheLoai)
-                .orElseThrow(() ->
-                        new RuntimeException("Không tìm thấy thể loại tiện ích"));
 
-        tienIch.setTheLoaiTienIch(theLoai);
-        tienIch.setNgayTao(LocalDateTime.now());
-        return tienIchRepository.save(tienIch);
-    }
 
     @Override
     public Page<TienIch> timKiemTienIch(String tuKhoa, int trang, int kichThuoc) {
@@ -94,9 +84,8 @@ public class TienIchServiceImpl implements TienIchService {
         }
 
         if (tienIchDTO.getTenTienIch() != null) {
-            tienIch.setTenTienIch(tienIch.getTenTienIch());
+            tienIch.setTenTienIch(tienIchDTO.getTenTienIch());
         }
-
         if (tienIchDTO.getMoTa() != null) {
             tienIch.setMoTa(tienIchDTO.getMoTa());
         }
