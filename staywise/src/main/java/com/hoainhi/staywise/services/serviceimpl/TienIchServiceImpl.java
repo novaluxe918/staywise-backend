@@ -59,7 +59,10 @@ public class TienIchServiceImpl implements TienIchService {
 
     @Override
     public String saveTienIch(TienIchDTO tienIchDTO) {
+
         boolean themMoi = tienIchDTO.getId() == null;
+
+
         Set<ConstraintViolation<TienIchDTO>> violations =
                 themMoi
                         ? validator.validate(tienIchDTO, ThemMoi.class)
@@ -72,33 +75,42 @@ public class TienIchServiceImpl implements TienIchService {
 
             throw new ConstraintViolationException(message, violations);
         }
+
         TienIch tienIch;
-        if(themMoi){
+
+        if (themMoi) {
             tienIch = new TienIch();
             tienIch.setTrangThai(TrangThai.DANG_HOAT_DONG);
             tienIch.setNgayTao(LocalDateTime.now());
-        }else {
-            tienIch = tienIchRepository.findById(tienIchDTO.getId()).orElseThrow(
-                    () -> new RuntimeException("Khong tim thay tien ich")
-            );
+        } else {
+            tienIch = tienIchRepository.findById(tienIchDTO.getId())
+                    .orElseThrow(() ->
+                            new RuntimeException("Không tìm thấy tiện ích"));
         }
+
 
         if (tienIchDTO.getTenTienIch() != null) {
             tienIch.setTenTienIch(tienIchDTO.getTenTienIch());
         }
+
         if (tienIchDTO.getMoTa() != null) {
             tienIch.setMoTa(tienIchDTO.getMoTa());
         }
 
-        TheLoaiTienIch theLoai = theLoaiTienIchRepository
-                .findById(tienIchDTO.getMatheloai())
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Không tìm thấy thể loại tiện ích"
-                        ));
+        if (tienIchDTO.getMatheloai() != null) {
+            TheLoaiTienIch theLoai = theLoaiTienIchRepository
+                    .findById(tienIchDTO.getMatheloai())
+                    .orElseThrow(() ->
+                            new RuntimeException("Không tìm thấy thể loại tiện ích"));
 
-        tienIch.setTheLoaiTienIch(theLoai);
+            tienIch.setTheLoaiTienIch(theLoai);
+        }
+
+        // 6. Lưu dữ liệu
         tienIchRepository.save(tienIch);
-        return themMoi ? "Them thong tin thanh cong" : "Cap nhat thong tin thanh cong";
+
+        return themMoi
+                ? "Thêm tiện ích thành công"
+                : "Cập nhật tiện ích thành công";
     }
 }

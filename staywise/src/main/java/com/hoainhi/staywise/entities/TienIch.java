@@ -30,13 +30,12 @@ public class TienIch {
     @Column(name = "trangThai")
     private TrangThai trangThai;
 
-    @ManyToOne
-    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "matheloai", nullable = false)
     private TheLoaiTienIch theLoaiTienIch;
 
-    @OneToMany(mappedBy = "tienIch", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "tienIch", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<TienIchHomeStay> tienIchHomeStays;
-
 
 }

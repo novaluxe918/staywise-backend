@@ -33,7 +33,7 @@ public class DichVuController {
     @Autowired
     private Validator validator;
 
-    @GetMapping("")
+    @GetMapping("/timKiem")
     public ResponseEntity<?> showAll( @RequestParam(defaultValue = "") String tuKhoa,
                                       @RequestParam(defaultValue = "0") int trang,  @RequestParam(defaultValue = "5") int kichThuoc){
         Page<DichVu> dichVus = dichVuService.timKiem(tuKhoa, trang, kichThuoc);

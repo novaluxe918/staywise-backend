@@ -1,6 +1,7 @@
 package com.hoainhi.staywise.entities;
 
 import com.hoainhi.staywise.enums.TrangThaiUser;
+import com.hoainhi.staywise.enums.TrangThaiXacMinh;
 import com.hoainhi.staywise.enums.VaiTro;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -52,6 +53,17 @@ public class NguoiDung {
 
     @Column(name = "anh_cccd_mat_sau")
     private String anhCCCDMatSau;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "trangThaiXacMinh", nullable = false)
+    private TrangThaiXacMinh trangThaiXacMinh;
+
+    @Column(name = "lyDoTuChoiXacMinh", columnDefinition = "TEXT")
+    private String lyDoTuChoiXacMinh;
+
+    @Column(name = "ngayXacMinh")
+    private LocalDateTime ngayXacMinh;
+
 
     @OneToMany(mappedBy = "nguoiDung", fetch = FetchType.LAZY)
     private List<HomeStay> homeStays;

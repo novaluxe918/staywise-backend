@@ -56,30 +56,45 @@ public class TheLoaiTienIchServiceImpl implements TheLoaiTienIchService {
     public String saveTheLoai(TheLoaiTienTichDTO theLoaiTienTichDTO, MultipartFile file) throws IOException {
         boolean themMoi = theLoaiTienTichDTO.getId() == null;
 
-        if(themMoi && (theLoaiTienTichDTO.getTenTheLoai() == null || theLoaiTienTichDTO.getTenTheLoai().isBlank()) ){
-            throw new RuntimeException(
-                    "Tên thể loại không được để trống");
-
+        // 2. Kiểm tra tên thể loại
+        if (themMoi && (theLoaiTienTichDTO.getTenTheLoai() == null
+                || theLoaiTienTichDTO.getTenTheLoai().isBlank())) {
+            throw new RuntimeException("Tên thể loại không được để trống");
         }
-        TheLoaiTienIch tienIch;
-        if(themMoi){
-            tienIch = new TheLoaiTienIch();
-            tienIch.setTrangThai(TrangThai.DANG_HOAT_DONG);
-        }else {
-            tienIch = theLoaiTienIchRepository.findById(theLoaiTienTichDTO.getId()).orElseThrow(() -> new RuntimeException("Khong tim thaty"));
 
-        }
         if (theLoaiTienTichDTO.getTenTheLoai() != null
-                && !theLoaiTienTichDTO.getTenTheLoai().isBlank()) {
-            tienIch.setTenTheLoai(theLoaiTienTichDTO.getTenTheLoai());
+                && theLoaiTienTichDTO.getTenTheLoai().isBlank()) {
+            throw new RuntimeException("Tên thể loại không được để trống");
         }
 
-        if(file != null && !file.isEmpty()){
-             String url = cloudinaryService.taiAnh(file);
-             tienIch.setHinhAnh(url);
+        TheLoaiTienIch theLoai;
 
+        if (themMoi) {
+            theLoai = new TheLoaiTienIch();
+            theLoai.setTrangThai(TrangThai.DANG_HOAT_DONG);
+        } else {
+            theLoai = theLoaiTienIchRepository
+                    .findById(theLoaiTienTichDTO.getId())
+                    .orElseThrow(() ->
+                            new RuntimeException("Không tìm thấy thể loại tiện ích"));
         }
-        theLoaiTienIchRepository.save(tienIch);
-        return themMoi ? "Them thanh cong" : "Cap nhat thanh cong";
+
+
+        if (theLoaiTienTichDTO.getTenTheLoai() != null) {
+            theLoai.setTenTheLoai(theLoaiTienTichDTO.getTenTheLoai().trim());
+        }
+
+        // 5. Cập nhật ảnh nếu người dùng chọn ảnh mới
+        if (file != null && !file.isEmpty()) {
+            String url = cloudinaryService.taiAnh(file);
+            theLoai.setHinhAnh(url);
+        }
+
+        // 6. Lưu database
+        theLoaiTienIchRepository.save(theLoai);
+
+        return themMoi
+                ? "Thêm thể loại thành công"
+                : "Cập nhật thể loại thành công";
     }
 }

@@ -5,6 +5,7 @@ import com.hoainhi.staywise.dtos.DangNhapDTO;
 import com.hoainhi.staywise.dtos.DangNhapResponse;
 import com.hoainhi.staywise.entities.NguoiDung;
 import com.hoainhi.staywise.enums.TrangThaiUser;
+import com.hoainhi.staywise.enums.TrangThaiXacMinh;
 import com.hoainhi.staywise.enums.VaiTro;
 import com.hoainhi.staywise.reponsitories.NguoiDungRepository;
 import com.hoainhi.staywise.security.JwtService;
@@ -50,6 +51,9 @@ public class AuthServiceImpl implements AuthService {
         nguoiDung.setMatKhau(passwordEncoder.encode(dangKyDTO.getMatKhau()));
         nguoiDung.setTrangThaiUser(TrangThaiUser.DANG_HOAT_DONG);
         nguoiDung.setNgayTao(LocalDateTime.now());
+        nguoiDung.setTrangThaiXacMinh(
+                TrangThaiXacMinh.CHUA_XAC_MINH
+        );
         return nguoiDungRepository.save(nguoiDung);
     }
 

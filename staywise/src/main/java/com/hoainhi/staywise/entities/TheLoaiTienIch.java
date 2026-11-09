@@ -1,5 +1,6 @@
 package com.hoainhi.staywise.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hoainhi.staywise.enums.TrangThai;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -23,7 +24,9 @@ public class TheLoaiTienIch {
     private TrangThai trangThai;
 
     private String hinhAnh;
-    @OneToMany(mappedBy = "theLoaiTienIch", fetch = FetchType.EAGER)
+
+    @OneToMany(mappedBy = "theLoaiTienIch", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<TienIch> tienIches;
 
 
