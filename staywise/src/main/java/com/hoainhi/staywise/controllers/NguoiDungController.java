@@ -4,21 +4,22 @@ import com.hoainhi.staywise.dtos.NguoiDungDTO;
 import com.hoainhi.staywise.dtos.NguoiDungResponseDTO;
 import com.hoainhi.staywise.services.serviceimpl.NguoiDungServiceImpl;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 @Controller
 @RequestMapping("/nguoidung")
 public class NguoiDungController {
+    @Autowired
     private NguoiDungServiceImpl nguoiDungService;
+
     @PutMapping(
             value = "/cap-nhat",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
@@ -41,5 +42,19 @@ public class NguoiDungController {
         return ResponseEntity.ok(
                 nguoiDungService.layThongTin(authentication.getName())
         );
+    }
+
+    @PutMapping("/anhDaiDien")
+    public ResponseEntity<?> capNhatAnhDaiDien(
+            @RequestParam("anhDaiDien") MultipartFile anhDaiDien,
+            Authentication authentication
+    ) throws IOException {
+
+        nguoiDungService.capNhatAnhDaiDien(
+                authentication.getName(),
+                anhDaiDien
+        );
+
+        return ResponseEntity.ok("Cập nhật ảnh đại diện thành công");
     }
 }

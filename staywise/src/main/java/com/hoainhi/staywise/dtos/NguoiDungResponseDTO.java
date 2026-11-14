@@ -5,6 +5,8 @@ import lombok.Data;
 
 @Data
 public class NguoiDungResponseDTO {
+    private Long id;
+
     private String hoTen;
 
     private String email;

@@ -4,7 +4,6 @@ import com.hoainhi.staywise.dtos.HomeStayDTO;
 import com.hoainhi.staywise.entities.NguoiDung;
 import com.hoainhi.staywise.enums.VaiTro;
 import com.hoainhi.staywise.reponsitories.NguoiDungRepository;
-import com.hoainhi.staywise.services.serviceimpl.GiayToChuNhaServiceImpl;
 import com.hoainhi.staywise.services.serviceimpl.HinhAnhHomeStaySeviceImpl;
 import com.hoainhi.staywise.services.serviceimpl.HomeStayServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.security.Principal;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/homestay")
@@ -32,9 +28,6 @@ public class HomeStayController {
 
     @Autowired
     private NguoiDungRepository nguoiDungRepository;
-
-    @Autowired
-    private GiayToChuNhaServiceImpl giayToChuNhaService;
 
     @GetMapping("/timKiem")
     public ResponseEntity<?> showAllHomeStay(@RequestParam(defaultValue = "") String tuKhoa,

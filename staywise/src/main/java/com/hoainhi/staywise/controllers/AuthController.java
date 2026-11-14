@@ -45,22 +45,21 @@ public class AuthController {
     @PostMapping("/dangNhap")
     public ResponseEntity<?> dangNhap(@RequestBody DangNhapDTO dangNhapDTO) throws Exception {
         DangNhapResponse response = authService.dangNhap(dangNhapDTO);
-
-        // 1. Cookie bảo mật chứa JWT (JavaScript không đọc được)
         ResponseCookie tokenCookie = ResponseCookie.from("access_token", response.token())
                 .httpOnly(true)
-                .secure(false) // Bắt buộc false trên localhost HTTP
+                .secure(false)
                 .path("/")
                 .maxAge(24 * 60 * 60)
                 .sameSite("Lax")
                 .build();
 
-        // 2. Cookie chứa User Info để React đọc khi F5 (httpOnly = false)
+
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("id", response.id());
         userInfo.put("email", response.email());
         userInfo.put("vaiTro", response.vaiTro());
         userInfo.put("hoTen", response.hoTen() != null ? response.hoTen() : "");
+        userInfo.put("anhDaiDien", response.anhDaiDien());
 
         String userJson = URLEncoder.encode(objectMapper.writeValueAsString(userInfo), StandardCharsets.UTF_8);
 

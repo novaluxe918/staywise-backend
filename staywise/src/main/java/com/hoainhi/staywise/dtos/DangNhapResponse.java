@@ -10,5 +10,6 @@ public record DangNhapResponse(
         Long id,
         String email,
         String vaiTro,
-        String hoTen
+        String hoTen,
+        String anhDaiDien
 ) {}
