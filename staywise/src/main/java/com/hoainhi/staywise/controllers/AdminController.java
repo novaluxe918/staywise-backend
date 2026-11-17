@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-@Controller
+@RestController
 @RequestMapping("/admin")
 public class AdminController {
 
@@ -36,13 +36,23 @@ public class AdminController {
         }
     }
 
-    @PutMapping("/tuChoi")
-    public ResponseEntity<?> tuChoiHomeStay(@RequestBody TuChoiHomeStayDTO tuChoiHomeStayDTO){
-        try{
-            homeStayService.tuChoiHomeStay(tuChoiHomeStayDTO.getId(), tuChoiHomeStayDTO.getLyDoTuChoi());
-            return ResponseEntity.ok().body("Da gui thong tin");
+    @PutMapping("/tuChoi/{id}")
+    public ResponseEntity<?> tuChoiHomeStay(
+            @PathVariable Long id,
+            @RequestBody TuChoiHomeStayDTO dto
+    ) {
+        try {
+            homeStayService.tuChoiHomeStay(
+                    id,
+                    dto.getLyDoTuChoi()
+            );
+
+            return ResponseEntity.ok("Đã từ chối HomeStay");
+
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(e.getMessage());
         }
     }
 

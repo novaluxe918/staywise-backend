@@ -60,4 +60,6 @@ public class HomeStayDTO {
     private List<String> tienIchHienThi = new ArrayList<>();
 
     private List<String> dichVuHienThi = new ArrayList<>();
+
+    private List<HinhAnhHomeStayDTO> danhSachHinhAnh = new ArrayList<>();
 }

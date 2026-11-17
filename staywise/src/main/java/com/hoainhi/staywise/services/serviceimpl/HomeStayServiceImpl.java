@@ -1,5 +1,6 @@
 package com.hoainhi.staywise.services.serviceimpl;
 
+import com.hoainhi.staywise.dtos.HinhAnhHomeStayDTO;
 import com.hoainhi.staywise.dtos.HomeStayDTO;
 import com.hoainhi.staywise.entities.*;
 import com.hoainhi.staywise.enums.TrangThaiHomeStay;
@@ -99,8 +100,22 @@ public class HomeStayServiceImpl implements HomeStayService {
                 );
             }
 
+           if(homeStay.getHomeStays() != null){
+               List<HinhAnhHomeStayDTO> danhSachAnh =
+                       homeStay.getHomeStays().stream()
+                               .map(anh -> {
+                                   HinhAnhHomeStayDTO anhDTO = new HinhAnhHomeStayDTO();
+                                   anhDTO.setId(anh.getId());
+                                   anhDTO.setDuongDan(anh.getDuongDan());
+                                   anhDTO.setLaAnhDaiDien(anh.isLaAnhDaiDien());
+                                   return anhDTO;
+                               })
+                               .toList();
 
-            dto.setTienIchHienThi(
+               dto.setDanhSachHinhAnh(danhSachAnh);
+
+           }
+           dto.setTienIchHienThi(
                     homeStay.getTienIchHomeStays()
                             .stream()
                             .filter(item -> item.getTienIch() != null)
@@ -142,14 +157,27 @@ public class HomeStayServiceImpl implements HomeStayService {
     }
 
     @Override
+    @Transactional
     public HomeStay tuChoiHomeStay(Long id, String lyDoTuChoi) {
-        HomeStay homeStay = homeStayRepository.findById(id).orElseThrow(() -> new RuntimeException("Khong tim thay homestay"));
+
+        HomeStay homeStay = homeStayRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Không tìm thấy HomeStay")
+                );
+
         if (homeStay.getTrangThaiHomeStay() != TrangThaiHomeStay.CHO_DUYET) {
             throw new RuntimeException(
-                    "Chỉ được từ chối HomeStay đang chờ duyệt!");
+                    "Chỉ được từ chối HomeStay đang chờ duyệt!"
+            );
         }
+
+        if (lyDoTuChoi == null || lyDoTuChoi.trim().isEmpty()) {
+            throw new RuntimeException("Lý do từ chối không được để trống");
+        }
+
         homeStay.setTrangThaiHomeStay(TrangThaiHomeStay.TU_CHOI);
         homeStay.setLyDoTuChoi(lyDoTuChoi.trim());
+
         return homeStayRepository.save(homeStay);
     }
 
