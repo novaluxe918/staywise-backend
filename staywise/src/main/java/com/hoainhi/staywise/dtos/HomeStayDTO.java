@@ -1,6 +1,7 @@
 package com.hoainhi.staywise.dtos;
 
 import com.hoainhi.staywise.enums.TheLoaiHomeStay;
+import com.hoainhi.staywise.enums.TrangThaiHomeStay;
 import com.hoainhi.staywise.validations.ThemMoi;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -21,6 +22,8 @@ public class HomeStayDTO {
             groups = ThemMoi.class
     )
     private String tenHomeStay;
+
+    private String tenChuHomeStay;
 
     private String moTa;
 
@@ -49,6 +52,12 @@ public class HomeStayDTO {
 
     private LocalDate ngayDangKy;
 
+    private TrangThaiHomeStay trangThaiHomeStay;
+
     private List<Long> danhSachTienIchHS = new ArrayList<>();
     private List<Long> danhSachDichVuHS = new ArrayList<>();
+
+    private List<String> tienIchHienThi = new ArrayList<>();
+
+    private List<String> dichVuHienThi = new ArrayList<>();
 }

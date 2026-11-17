@@ -2,6 +2,8 @@ package com.hoainhi.staywise.controllers;
 
 import com.hoainhi.staywise.dtos.NguoiDungDTO;
 import com.hoainhi.staywise.dtos.NguoiDungResponseDTO;
+import com.hoainhi.staywise.entities.NguoiDung;
+import com.hoainhi.staywise.reponsitories.NguoiDungRepository;
 import com.hoainhi.staywise.services.serviceimpl.NguoiDungServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ import java.io.IOException;
 public class NguoiDungController {
     @Autowired
     private NguoiDungServiceImpl nguoiDungService;
+
+    @Autowired
+    private NguoiDungRepository nguoiDungRepository;
 
     @PutMapping(
             value = "/cap-nhat",
@@ -56,5 +61,17 @@ public class NguoiDungController {
         );
 
         return ResponseEntity.ok("Cập nhật ảnh đại diện thành công");
+    }
+
+    @GetMapping("/thong-bao")
+    public ResponseEntity<?> getThongTinHoSo(Authentication authentication) {
+
+        NguoiDung nguoiDung = nguoiDungRepository
+                .findByEmail(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+
+        return ResponseEntity.ok(
+                nguoiDungService.getHoSoTheoNguoiDung(nguoiDung.getId())
+        );
     }
 }

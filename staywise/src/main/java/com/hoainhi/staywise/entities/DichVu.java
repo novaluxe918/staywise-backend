@@ -1,5 +1,6 @@
 package com.hoainhi.staywise.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hoainhi.staywise.enums.TrangThai;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class DichVu {
     private String tenDichVu;
 
     @OneToMany(mappedBy = "dichVu", fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<HomeStayDichVu> homeStayDichVus;
 
     @Enumerated(EnumType.STRING)

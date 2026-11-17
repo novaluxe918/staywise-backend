@@ -1,6 +1,7 @@
 package com.hoainhi.staywise.services.serviceimpl;
 
 import com.hoainhi.staywise.dtos.CapNhatTrangThaiXacMinhDTO;
+import com.hoainhi.staywise.dtos.HoSoChuHomeStayResponseDTO;
 import com.hoainhi.staywise.dtos.NguoiDungDTO;
 import com.hoainhi.staywise.dtos.NguoiDungResponseDTO;
 import com.hoainhi.staywise.entities.HoSoChuHomeStay;
@@ -106,7 +107,7 @@ public class NguoiDungServiceImpl implements NguoiDungService {
                 );
             }
 
-            hoSo.setTrangThaiXacMinh(TrangThaiXacMinh.CHUA_XAC_MINH);
+            hoSo.setTrangThaiXacMinh(TrangThaiXacMinh.CHO_XAC_MINH);
             hoSo.setNgayXacMinh(null);
             hoSo.setLyDoTuChoiXacMinh(null);
 
@@ -265,6 +266,25 @@ public class NguoiDungServiceImpl implements NguoiDungService {
         hoSo.setNgayXacMinh(LocalDateTime.now());
 
         hoSoChuHomeStayRepository.save(hoSo);
+    }
+
+    @Override
+    public HoSoChuHomeStayResponseDTO getHoSoTheoNguoiDung(Long maNguoiDung) {
+        HoSoChuHomeStay hoSo = hoSoChuHomeStayRepository
+                .findByNguoiDung_Id(maNguoiDung)
+                .orElse(null);
+
+        HoSoChuHomeStayResponseDTO response = new HoSoChuHomeStayResponseDTO();
+
+        if (hoSo == null) {
+            response.setTrangThaiXacMinh(TrangThaiXacMinh.CHO_XAC_MINH);
+            return response;
+        }
+
+        response.setTrangThaiXacMinh(hoSo.getTrangThaiXacMinh());
+        response.setLyDoTuChoiXacMinh(hoSo.getLyDoTuChoiXacMinh());
+
+        return response;
     }
 
 }

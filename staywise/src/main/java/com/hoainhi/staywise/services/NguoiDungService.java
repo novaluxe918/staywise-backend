@@ -1,6 +1,7 @@
 package com.hoainhi.staywise.services;
 
 import com.hoainhi.staywise.dtos.CapNhatTrangThaiXacMinhDTO;
+import com.hoainhi.staywise.dtos.HoSoChuHomeStayResponseDTO;
 import com.hoainhi.staywise.dtos.NguoiDungDTO;
 import com.hoainhi.staywise.dtos.NguoiDungResponseDTO;
 import org.springframework.stereotype.Service;
@@ -23,4 +24,6 @@ public interface NguoiDungService {
             Long maNguoiDung,
             CapNhatTrangThaiXacMinhDTO dto
     );
+
+    HoSoChuHomeStayResponseDTO getHoSoTheoNguoiDung(Long maNguoiDung);
 }

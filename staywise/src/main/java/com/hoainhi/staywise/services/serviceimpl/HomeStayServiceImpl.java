@@ -61,20 +61,65 @@ public class HomeStayServiceImpl implements HomeStayService {
     private CloudinaryService cloudinaryService;
 
     @Override
-    public Page<HomeStayDTO> showAll(String tuKhoa, int trang, int kichThuoc) {
-        Pageable pageable = PageRequest.of(trang, kichThuoc, Sort.by("id").descending());
-        Page<HomeStay> homeStays =
-                homeStayRepository.findByTenHomeStayContaining(tuKhoa, pageable);
+    public Page<HomeStayDTO> showAll(
+            String tuKhoa,
+            int trang,
+            int kichThuoc
+    ) {
+
+        Pageable pageable = PageRequest.of(
+                trang,
+                kichThuoc,
+                Sort.by("id").descending()
+        );
+
+        Page<HomeStay> homeStays;
+
+        if (tuKhoa == null || tuKhoa.trim().isEmpty()) {
+            homeStays = homeStayRepository.findAll(pageable);
+        } else {
+            homeStays = homeStayRepository
+                    .findByTenHomeStayContaining(
+                            tuKhoa.trim(),
+                            pageable
+                    );
+        }
 
         return homeStays.map(homeStay -> {
+
             HomeStayDTO dto = new HomeStayDTO();
 
+
             BeanUtils.copyProperties(homeStay, dto);
+
+
+            if (homeStay.getNguoiDung() != null) {
+                dto.setTenChuHomeStay(
+                        homeStay.getNguoiDung().getHoTen()
+                );
+            }
+
+
+            dto.setTienIchHienThi(
+                    homeStay.getTienIchHomeStays()
+                            .stream()
+                            .filter(item -> item.getTienIch() != null)
+                            .map(item -> item.getTienIch().getTenTienIch())
+                            .toList()
+            );
+
+
+            dto.setDichVuHienThi(
+                    homeStay.getHomeStayDichVus()
+                            .stream()
+                            .filter(item -> item.getDichVu() != null)
+                            .map(item -> item.getDichVu().getTenDichVu())
+                            .toList()
+            );
 
             return dto;
         });
     }
-
     @Override
     public HomeStay getById(Long id) {
         HomeStay homeStay = homeStayRepository.findById(id).orElseThrow(() -> new RuntimeException("Khong tim thay homestay"));

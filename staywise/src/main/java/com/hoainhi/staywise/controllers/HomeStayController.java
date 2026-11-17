@@ -1,7 +1,9 @@
 package com.hoainhi.staywise.controllers;
 
 import com.hoainhi.staywise.dtos.HomeStayDTO;
+import com.hoainhi.staywise.dtos.TheLoaiHomeStayResponse;
 import com.hoainhi.staywise.entities.NguoiDung;
+import com.hoainhi.staywise.enums.TheLoaiHomeStay;
 import com.hoainhi.staywise.enums.VaiTro;
 import com.hoainhi.staywise.reponsitories.NguoiDungRepository;
 import com.hoainhi.staywise.services.serviceimpl.HinhAnhHomeStaySeviceImpl;
@@ -15,9 +17,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/homestay")
 public class HomeStayController {
     @Autowired
@@ -44,6 +47,7 @@ public class HomeStayController {
             @RequestParam(value = "files", required = false)
             List<MultipartFile> files, Authentication authentication
            ) {
+
 
         try {
             if(authentication == null || !authentication.isAuthenticated()){
@@ -73,6 +77,17 @@ public class HomeStayController {
         }
     }
 
+
+    @GetMapping("/theloai")
+    public List<TheLoaiHomeStayResponse> getAll() {
+
+        return Arrays.stream(TheLoaiHomeStay.values())
+                .map(item -> new TheLoaiHomeStayResponse(
+                        item.name(),
+                        item.getLabel()
+                ))
+                .toList();
+    }
 
 
 

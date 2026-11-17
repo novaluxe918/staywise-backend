@@ -57,7 +57,7 @@ public class SecurityConfig {
                         // 2. Mở quyền các route auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/hanh-chinh/**").permitAll()
-
+                        .requestMatchers(HttpMethod.GET, "/homestay/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
