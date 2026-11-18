@@ -47,7 +47,7 @@ public class TienIchController {
 
 
 
-    @DeleteMapping("/xoa")
+    @DeleteMapping("/xoa/{id}")
     public ResponseEntity<?> xoaTienIch(@PathVariable Long id){
         try{
             tienIchService.xoa(id);

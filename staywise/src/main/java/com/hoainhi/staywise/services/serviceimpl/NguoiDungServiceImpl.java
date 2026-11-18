@@ -6,6 +6,7 @@ import com.hoainhi.staywise.dtos.NguoiDungDTO;
 import com.hoainhi.staywise.dtos.NguoiDungResponseDTO;
 import com.hoainhi.staywise.entities.HoSoChuHomeStay;
 import com.hoainhi.staywise.entities.NguoiDung;
+import com.hoainhi.staywise.enums.TrangThaiUser;
 import com.hoainhi.staywise.enums.TrangThaiXacMinh;
 import com.hoainhi.staywise.enums.VaiTro;
 import com.hoainhi.staywise.reponsitories.HoSoChuHomeStayRepository;
@@ -13,6 +14,10 @@ import com.hoainhi.staywise.reponsitories.NguoiDungRepository;
 import com.hoainhi.staywise.services.NguoiDungService;
 import com.hoainhi.staywise.services.cloudinary.CloudinaryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -188,15 +193,42 @@ public class NguoiDungServiceImpl implements NguoiDungService {
 
 
     @Override
-    public List<NguoiDungResponseDTO> getDanhSachOwner() {
+    public Page<NguoiDungResponseDTO> getDanhSachOwner(
+            String tuKhoa,
+            int trang,
+            int kichThuoc
+    ) {
 
-        List<NguoiDung> owners =
-                nguoiDungRepository.findByVaiTro(VaiTro.OWNER);
 
-        return owners.stream().map(owner -> {
+        Pageable pageable = PageRequest.of(
+                trang,
+                kichThuoc,
+                Sort.by("id").descending()
+        );
+
+
+        Page<NguoiDung> owners;
+
+        if (tuKhoa == null || tuKhoa.trim().isEmpty()) {
+
+            owners = nguoiDungRepository.findByVaiTro(
+                    VaiTro.OWNER,
+                    pageable
+            );
+
+        } else {
+
+            owners = nguoiDungRepository.findByVaiTroAndHoTenContainingIgnoreCase(
+                    VaiTro.OWNER,
+                    tuKhoa.trim(),
+                    pageable
+            );
+        }
+
+
+        return owners.map(owner -> {
 
             NguoiDungResponseDTO response = new NguoiDungResponseDTO();
-
 
             response.setId(owner.getId());
             response.setHoTen(owner.getHoTen());
@@ -204,12 +236,13 @@ public class NguoiDungServiceImpl implements NguoiDungService {
             response.setSoDienThoai(owner.getSoDienThoai());
             response.setAnhDaiDien(owner.getAnhDaiDien());
 
+            // Lấy hồ sơ chủ HomeStay
             HoSoChuHomeStay hoSo = hoSoChuHomeStayRepository
                     .findByNguoiDung_Id(owner.getId())
                     .orElse(null);
 
-
             if (hoSo != null) {
+
                 response.setAnhCCCDMatTruoc(
                         hoSo.getAnhCCCDMatTruoc()
                 );
@@ -232,8 +265,7 @@ public class NguoiDungServiceImpl implements NguoiDungService {
             }
 
             return response;
-
-        }).toList();
+        });
     }
 
     @Override
@@ -285,6 +317,59 @@ public class NguoiDungServiceImpl implements NguoiDungService {
         response.setLyDoTuChoiXacMinh(hoSo.getLyDoTuChoiXacMinh());
 
         return response;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<NguoiDungResponseDTO> timKiemNguoiDung(
+            String tuKhoa,
+            VaiTro vaiTro,
+            TrangThaiUser trangThai,
+            int trang,
+            int kichThuoc
+    ) {
+
+
+        if (tuKhoa != null && tuKhoa.trim().isEmpty()) {
+            tuKhoa = null;
+        }
+
+        if (tuKhoa != null) {
+            tuKhoa = tuKhoa.trim();
+        }
+
+
+        Pageable pageable = PageRequest.of(
+                trang,
+                kichThuoc,
+                Sort.by("id").descending()
+        );
+
+        // Gọi Repository
+        Page<NguoiDung> danhSach =
+                nguoiDungRepository.timKiemNguoiDung(
+                        tuKhoa,
+                        vaiTro,
+                        trangThai,
+                        pageable
+                );
+
+
+        return danhSach.map(nd -> {
+
+            NguoiDungResponseDTO dto = new NguoiDungResponseDTO();
+
+            dto.setId(nd.getId());
+            dto.setHoTen(nd.getHoTen());
+            dto.setEmail(nd.getEmail());
+            dto.setSoDienThoai(nd.getSoDienThoai());
+            dto.setAnhDaiDien(nd.getAnhDaiDien());
+            dto.setVaiTro(nd.getVaiTro());
+            dto.setTrangThaiUser(nd.getTrangThaiUser());
+            dto.setNgayTao(nd.getNgayTao());
+
+            return dto;
+        });
     }
 
 }

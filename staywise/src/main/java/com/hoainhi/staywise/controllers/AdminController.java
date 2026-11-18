@@ -7,6 +7,7 @@ import com.hoainhi.staywise.entities.NguoiDung;
 import com.hoainhi.staywise.services.serviceimpl.HomeStayServiceImpl;
 import com.hoainhi.staywise.services.serviceimpl.NguoiDungServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -67,9 +68,22 @@ public class AdminController {
     }
 
     @GetMapping("/danhSachOwner")
-    public ResponseEntity<List<NguoiDungResponseDTO>> getAllOwner(){
+    public ResponseEntity<Page<NguoiDungResponseDTO>> getDanhSachOwner(
+
+            @RequestParam(defaultValue = "") String tuKhoa,
+
+            @RequestParam(defaultValue = "0") int trang,
+
+            @RequestParam(defaultValue = "5") int kichThuoc
+
+    ) {
+
         return ResponseEntity.ok(
-                nguoiDungService.getDanhSachOwner()
+                nguoiDungService.getDanhSachOwner(
+                        tuKhoa,
+                        trang,
+                        kichThuoc
+                )
         );
     }
 

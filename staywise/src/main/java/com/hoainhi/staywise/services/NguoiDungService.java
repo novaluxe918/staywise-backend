@@ -4,6 +4,9 @@ import com.hoainhi.staywise.dtos.CapNhatTrangThaiXacMinhDTO;
 import com.hoainhi.staywise.dtos.HoSoChuHomeStayResponseDTO;
 import com.hoainhi.staywise.dtos.NguoiDungDTO;
 import com.hoainhi.staywise.dtos.NguoiDungResponseDTO;
+import com.hoainhi.staywise.enums.TrangThaiUser;
+import com.hoainhi.staywise.enums.VaiTro;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,7 +21,11 @@ public interface NguoiDungService {
             String email,
             MultipartFile anhDaiDien) throws IOException;
 
-    List<NguoiDungResponseDTO> getDanhSachOwner();
+    Page<NguoiDungResponseDTO> getDanhSachOwner(
+            String tuKhoa,
+            int trang,
+            int kichThuoc
+    );
 
     void capNhatTrangThaiXacMinh(
             Long maNguoiDung,
@@ -26,4 +33,12 @@ public interface NguoiDungService {
     );
 
     HoSoChuHomeStayResponseDTO getHoSoTheoNguoiDung(Long maNguoiDung);
+
+    Page<NguoiDungResponseDTO> timKiemNguoiDung(
+            String tuKhoa,
+            VaiTro vaiTro,
+            TrangThaiUser trangThai,
+            int trang,
+            int kichThuoc
+    );
 }

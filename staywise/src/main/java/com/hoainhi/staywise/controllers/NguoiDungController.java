@@ -3,10 +3,13 @@ package com.hoainhi.staywise.controllers;
 import com.hoainhi.staywise.dtos.NguoiDungDTO;
 import com.hoainhi.staywise.dtos.NguoiDungResponseDTO;
 import com.hoainhi.staywise.entities.NguoiDung;
+import com.hoainhi.staywise.enums.TrangThaiUser;
+import com.hoainhi.staywise.enums.VaiTro;
 import com.hoainhi.staywise.reponsitories.NguoiDungRepository;
 import com.hoainhi.staywise.services.serviceimpl.NguoiDungServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -16,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-@Controller
+@RestController
 @RequestMapping("/nguoidung")
 public class NguoiDungController {
     @Autowired
@@ -24,6 +27,35 @@ public class NguoiDungController {
 
     @Autowired
     private NguoiDungRepository nguoiDungRepository;
+
+
+    @GetMapping("/show-all")
+    public Page<NguoiDungResponseDTO> showAllNguoiDung(
+
+            @RequestParam(required = false)
+            String tuKhoa,
+
+            @RequestParam(required = false)
+            VaiTro vaiTro,
+
+            @RequestParam(required = false)
+            TrangThaiUser trangThai,
+
+            @RequestParam(defaultValue = "0")
+            int trang,
+
+            @RequestParam(defaultValue = "10")
+            int kichThuoc
+    ) {
+
+        return nguoiDungService.timKiemNguoiDung(
+                tuKhoa,
+                vaiTro,
+                trangThai,
+                trang,
+                kichThuoc
+        );
+    }
 
     @PutMapping(
             value = "/cap-nhat",
@@ -74,4 +106,6 @@ public class NguoiDungController {
                 nguoiDungService.getHoSoTheoNguoiDung(nguoiDung.getId())
         );
     }
+
+
 }
