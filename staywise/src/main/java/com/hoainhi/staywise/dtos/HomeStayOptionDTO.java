@@ -7,7 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class HomeStayOptionDTO {
 
-    private Long maHomeStay;
+    private Long id;
 
     private String tenHomeStay;
 }

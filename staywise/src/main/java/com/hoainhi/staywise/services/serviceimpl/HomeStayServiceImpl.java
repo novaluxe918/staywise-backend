@@ -351,5 +351,39 @@ public class HomeStayServiceImpl implements HomeStayService {
         );
     }
 
+    @Override
+    @Transactional
+    public HomeStayDTO layThongTinHomeStay(Long id, String email) {
+
+        NguoiDung chuHomeStay = nguoiDungRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("Không tìm thấy tài khoản!")
+                );
+
+
+        if (chuHomeStay.getVaiTro() != VaiTro.OWNER) {
+            throw new RuntimeException("Bạn không có quyền truy cập!");
+        }
+
+        HomeStay homeStay = homeStayRepository
+                .findByIdAndNguoiDung_Id(
+                        id,
+                        chuHomeStay.getId()
+                )
+                .orElseThrow(() ->
+                        new RuntimeException(
+                                "Không tìm thấy HomeStay hoặc bạn không có quyền truy cập!"
+                        )
+                );
+
+
+        HomeStayDTO dto = new HomeStayDTO();
+
+        BeanUtils.copyProperties(homeStay, dto);
+
+
+        return dto;
+    }
+
 
 }

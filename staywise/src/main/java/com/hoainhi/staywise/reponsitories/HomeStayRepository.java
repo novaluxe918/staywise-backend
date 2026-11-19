@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface HomeStayRepository extends JpaRepository<HomeStay, Long> {
@@ -31,4 +32,9 @@ public interface HomeStayRepository extends JpaRepository<HomeStay, Long> {
            @Param("maChuHomeStay") Long maChuHomeStay,
            @Param("trangThai") TrangThaiHomeStay trangThai
    );
+
+    Optional<HomeStay> findByIdAndNguoiDung_Id(
+            Long id,
+            Long nguoiDungId
+    );
 }

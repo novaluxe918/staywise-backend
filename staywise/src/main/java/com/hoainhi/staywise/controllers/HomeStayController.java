@@ -104,6 +104,29 @@ public class HomeStayController {
         return ResponseEntity.ok(danhSach);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<?> layThongTinHomeStay(
+            @PathVariable Long id,
+            Authentication authentication
+    ) {
+
+        try {
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return ResponseEntity.status(401)
+                        .body("Vui lòng đăng nhập!");
+            }
+
+            HomeStayDTO dto = homeStayService.layThongTinHomeStay(
+                    id,
+                    authentication.getName()
+            );
+
+            return ResponseEntity.ok(dto);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
 
 }

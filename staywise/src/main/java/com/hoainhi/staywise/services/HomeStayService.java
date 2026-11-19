@@ -20,4 +20,5 @@ public interface HomeStayService {
     void ngungKinhDoanh(Long id);
     String saveHomeStay(HomeStayDTO dto, List<MultipartFile> files, Long maChuHomeStay) throws IOException;
     List<HomeStayOptionDTO> layDanhSachHomeStayDaDuyet(String email);
+    HomeStayDTO layThongTinHomeStay(Long id, String email);
 }
