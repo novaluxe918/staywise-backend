@@ -381,6 +381,46 @@ public class HomeStayServiceImpl implements HomeStayService {
 
         BeanUtils.copyProperties(homeStay, dto);
 
+        dto.setTenTheLoaiHomeStay(
+                homeStay.getTheLoaiHomeStay() != null
+                        ? homeStay.getTheLoaiHomeStay().getLabel()
+                        : null
+        );
+
+        List<String> danhSachTienIch = homeStay.getTienIchHomeStays()
+                .stream()
+                .map(item -> item.getTienIch().getTenTienIch())
+                .toList();
+
+        dto.setTienIchHienThi(danhSachTienIch);
+
+
+        List<String> danhSachDichVu = homeStay.getHomeStayDichVus()
+                .stream()
+                .map(item -> item.getDichVu().getTenDichVu())
+                .toList();
+
+        dto.setDichVuHienThi(danhSachDichVu);
+
+
+        dto.setDanhSachHinhAnh(
+                homeStay.getHomeStays()
+                        .stream()
+                        .map(anh -> {
+                            HinhAnhHomeStayDTO anhDTO =
+                                    new HinhAnhHomeStayDTO();
+
+                            anhDTO.setId(anh.getId());
+                            anhDTO.setDuongDan(anh.getDuongDan());
+                            anhDTO.setLaAnhDaiDien(anh.isLaAnhDaiDien());
+
+                            return anhDTO;
+                        })
+                        .toList()
+        );
+
+
+
 
         return dto;
     }

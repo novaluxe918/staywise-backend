@@ -92,9 +92,17 @@ public class HomeStayController {
 
 
     @GetMapping("/da-duyet")
-    public ResponseEntity<List<HomeStayOptionDTO>> layDanhSachHomeStayDaDuyet(
+    public ResponseEntity<?> layDanhSachHomeStayDaDuyet(
             Authentication authentication
     ) {
+
+
+        if (authentication == null ||
+                !authentication.isAuthenticated()) {
+
+            return ResponseEntity.status(401)
+                    .body("Vui lòng đăng nhập!");
+        }
 
         List<HomeStayOptionDTO> danhSach =
                 homeStayService.layDanhSachHomeStayDaDuyet(

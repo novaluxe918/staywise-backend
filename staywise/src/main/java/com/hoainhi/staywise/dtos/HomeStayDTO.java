@@ -54,6 +54,8 @@ public class HomeStayDTO {
 
     private TrangThaiHomeStay trangThaiHomeStay;
 
+    private String tenTheLoaiHomeStay;
+
     private List<Long> danhSachTienIchHS = new ArrayList<>();
     private List<Long> danhSachDichVuHS = new ArrayList<>();
 
