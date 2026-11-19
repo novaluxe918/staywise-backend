@@ -1,6 +1,7 @@
 package com.hoainhi.staywise.controllers;
 
 import com.hoainhi.staywise.dtos.HomeStayDTO;
+import com.hoainhi.staywise.dtos.HomeStayOptionDTO;
 import com.hoainhi.staywise.dtos.TheLoaiHomeStayResponse;
 import com.hoainhi.staywise.entities.NguoiDung;
 import com.hoainhi.staywise.enums.TheLoaiHomeStay;
@@ -90,5 +91,19 @@ public class HomeStayController {
     }
 
 
+    @GetMapping("/da-duyet")
+    public ResponseEntity<List<HomeStayOptionDTO>> layDanhSachHomeStayDaDuyet(
+            Authentication authentication
+    ) {
 
+        List<HomeStayOptionDTO> danhSach =
+                homeStayService.layDanhSachHomeStayDaDuyet(
+                        authentication.getName()
+                );
+
+        return ResponseEntity.ok(danhSach);
     }
+
+
+
+}

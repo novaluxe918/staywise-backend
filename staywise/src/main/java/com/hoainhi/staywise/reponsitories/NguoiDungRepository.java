@@ -1,6 +1,8 @@
 package com.hoainhi.staywise.reponsitories;
 
+import com.hoainhi.staywise.dtos.HomeStayOptionDTO;
 import com.hoainhi.staywise.entities.NguoiDung;
+import com.hoainhi.staywise.enums.TrangThaiHomeStay;
 import com.hoainhi.staywise.enums.TrangThaiUser;
 import com.hoainhi.staywise.enums.VaiTro;
 import org.springframework.data.domain.Page;
@@ -46,5 +48,9 @@ public interface NguoiDungRepository extends JpaRepository<NguoiDung, Long> {
             @Param("trangThai") TrangThaiUser trangThai,
             Pageable pageable
     );
+
+
+
+
 
 }

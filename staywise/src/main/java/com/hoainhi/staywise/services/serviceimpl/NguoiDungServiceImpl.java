@@ -1,15 +1,14 @@
 package com.hoainhi.staywise.services.serviceimpl;
 
-import com.hoainhi.staywise.dtos.CapNhatTrangThaiXacMinhDTO;
-import com.hoainhi.staywise.dtos.HoSoChuHomeStayResponseDTO;
-import com.hoainhi.staywise.dtos.NguoiDungDTO;
-import com.hoainhi.staywise.dtos.NguoiDungResponseDTO;
+import com.hoainhi.staywise.dtos.*;
 import com.hoainhi.staywise.entities.HoSoChuHomeStay;
 import com.hoainhi.staywise.entities.NguoiDung;
+import com.hoainhi.staywise.enums.TrangThaiHomeStay;
 import com.hoainhi.staywise.enums.TrangThaiUser;
 import com.hoainhi.staywise.enums.TrangThaiXacMinh;
 import com.hoainhi.staywise.enums.VaiTro;
 import com.hoainhi.staywise.reponsitories.HoSoChuHomeStayRepository;
+import com.hoainhi.staywise.reponsitories.HomeStayRepository;
 import com.hoainhi.staywise.reponsitories.NguoiDungRepository;
 import com.hoainhi.staywise.services.NguoiDungService;
 import com.hoainhi.staywise.services.cloudinary.CloudinaryService;
@@ -36,6 +35,9 @@ public class NguoiDungServiceImpl implements NguoiDungService {
 
     @Autowired
     private HoSoChuHomeStayRepository hoSoChuHomeStayRepository;
+
+    @Autowired
+    private HomeStayRepository homeStayRepository;
 
 
     @Override
@@ -371,5 +373,32 @@ public class NguoiDungServiceImpl implements NguoiDungService {
             return dto;
         });
     }
+
+    @Override
+    public void capNhatTrangThaiUser(Long id, CapNhatTrangThaiUserDTO dto) {
+        NguoiDung nguoiDung = nguoiDungRepository.findById(id) .orElseThrow(() ->
+                new RuntimeException("Không tìm thấy người dùng"));
+
+        TrangThaiUser trangThaiMoi = dto.getTrangThaiUser();
+
+
+        if (nguoiDung.getTrangThaiUser() == TrangThaiUser.DA_XOA) {
+            throw new RuntimeException(
+                    "Không thể cập nhật tài khoản đã bị xóa");
+        }
+
+
+        if (trangThaiMoi != TrangThaiUser.BI_KHOA
+                && trangThaiMoi != TrangThaiUser.DANG_HOAT_DONG) {
+            throw new RuntimeException(
+                    "Trạng thái cập nhật không hợp lệ");
+        }
+
+        nguoiDung.setTrangThaiUser(trangThaiMoi);
+
+        nguoiDungRepository.save(nguoiDung);
+    }
+
+
 
 }

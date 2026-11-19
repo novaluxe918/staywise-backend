@@ -1,9 +1,6 @@
 package com.hoainhi.staywise.services;
 
-import com.hoainhi.staywise.dtos.CapNhatTrangThaiXacMinhDTO;
-import com.hoainhi.staywise.dtos.HoSoChuHomeStayResponseDTO;
-import com.hoainhi.staywise.dtos.NguoiDungDTO;
-import com.hoainhi.staywise.dtos.NguoiDungResponseDTO;
+import com.hoainhi.staywise.dtos.*;
 import com.hoainhi.staywise.enums.TrangThaiUser;
 import com.hoainhi.staywise.enums.VaiTro;
 import org.springframework.data.domain.Page;
@@ -41,4 +38,11 @@ public interface NguoiDungService {
             int trang,
             int kichThuoc
     );
+
+    void capNhatTrangThaiUser(
+            Long id,
+            CapNhatTrangThaiUserDTO dto
+    );
+
+
 }

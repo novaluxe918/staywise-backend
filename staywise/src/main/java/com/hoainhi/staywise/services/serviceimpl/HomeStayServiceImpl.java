@@ -2,6 +2,7 @@ package com.hoainhi.staywise.services.serviceimpl;
 
 import com.hoainhi.staywise.dtos.HinhAnhHomeStayDTO;
 import com.hoainhi.staywise.dtos.HomeStayDTO;
+import com.hoainhi.staywise.dtos.HomeStayOptionDTO;
 import com.hoainhi.staywise.entities.*;
 import com.hoainhi.staywise.enums.TrangThaiHomeStay;
 import com.hoainhi.staywise.enums.VaiTro;
@@ -327,6 +328,27 @@ public class HomeStayServiceImpl implements HomeStayService {
         }
 
         return "Cập nhật thông tin HomeStay thành công!";
+    }
+
+
+    @Override
+    public List<HomeStayOptionDTO> layDanhSachHomeStayDaDuyet(String email) {
+
+        NguoiDung nguoiDung = nguoiDungRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new RuntimeException("Không tìm thấy tài khoản!")
+                );
+
+
+        if (nguoiDung.getVaiTro() != VaiTro.OWNER) {
+            throw new RuntimeException("Bạn không có quyền truy cập!");
+        }
+
+
+        return homeStayRepository.findHomeStayDaDuyet(
+                nguoiDung.getId(),
+                TrangThaiHomeStay.DA_DUYET
+        );
     }
 
 

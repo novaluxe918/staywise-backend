@@ -1,5 +1,6 @@
 package com.hoainhi.staywise.controllers;
 
+import com.hoainhi.staywise.dtos.CapNhatTrangThaiUserDTO;
 import com.hoainhi.staywise.dtos.NguoiDungDTO;
 import com.hoainhi.staywise.dtos.NguoiDungResponseDTO;
 import com.hoainhi.staywise.entities.NguoiDung;
@@ -107,5 +108,17 @@ public class NguoiDungController {
         );
     }
 
+
+    @PutMapping("/trang-thai/{id}")
+    public ResponseEntity<?> capNhatTrangThaiUser(
+            @PathVariable Long id,
+            @Valid @RequestBody CapNhatTrangThaiUserDTO dto) {
+
+        nguoiDungService.capNhatTrangThaiUser(id, dto);
+
+        return ResponseEntity.ok(
+                "Cập nhật trạng thái tài khoản thành công"
+        );
+    }
 
 }
