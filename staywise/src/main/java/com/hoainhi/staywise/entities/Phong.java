@@ -1,15 +1,19 @@
 package com.hoainhi.staywise.entities;
 
+import com.hoainhi.staywise.enums.LoaiPhong;
 import com.hoainhi.staywise.enums.TrangThaiPhong;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "phong")
 public class Phong {
@@ -25,8 +29,9 @@ public class Phong {
     @Column(name = "tenphong", columnDefinition = "varchar(100) ")
     private String tenPhong;
 
-    @Column(name="loaiphong",columnDefinition = "varchar(50)")
-    private String loaiPhong;
+    @Enumerated(EnumType.STRING)
+    @Column(name="loaiphong",nullable = false)
+    private LoaiPhong loaiPhong;
 
     @Column(name = "moTa")
     private String moTa;

@@ -6,5 +6,6 @@ import lombok.Data;
 public class ChiTietGiuongDTO {
     private Long maLoaiGiuong;
 
+    private String tenGiuong;
     private int soLuong;
 }

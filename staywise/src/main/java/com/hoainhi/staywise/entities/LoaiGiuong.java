@@ -3,10 +3,13 @@ package com.hoainhi.staywise.entities;
 import com.hoainhi.staywise.enums.TrangThai;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "loaigiuong")
 public class LoaiGiuong {

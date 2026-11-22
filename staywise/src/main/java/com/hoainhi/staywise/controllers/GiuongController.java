@@ -34,7 +34,7 @@ public class GiuongController {
     @GetMapping("/timkiem")
     public ResponseEntity<?> timKiem( @RequestParam(defaultValue = "") String tuKhoa,
                                       @RequestParam(defaultValue = "0") int trang,  @RequestParam(defaultValue = "5") int kichThuoc){
-        Page<LoaiGiuong> loaiGiuongs = loaiGiuongService.timKiem(tuKhoa, trang, kichThuoc);
+        Page<LoaiGiuongDTO> loaiGiuongs = loaiGiuongService.timKiem(tuKhoa, trang, kichThuoc);
         return ResponseEntity.ok(loaiGiuongs);
     }
 

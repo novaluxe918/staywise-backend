@@ -3,8 +3,11 @@ package com.hoainhi.staywise.entities;
 import com.hoainhi.staywise.enums.TheLoaiNguoi;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "soNguoi")
 public class SoNguoi {

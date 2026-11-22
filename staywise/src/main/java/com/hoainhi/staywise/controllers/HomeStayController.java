@@ -96,7 +96,6 @@ public class HomeStayController {
             Authentication authentication
     ) {
 
-
         if (authentication == null ||
                 !authentication.isAuthenticated()) {
 
@@ -111,7 +110,6 @@ public class HomeStayController {
 
         return ResponseEntity.ok(danhSach);
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<?> layThongTinHomeStay(
             @PathVariable Long id,

@@ -1,5 +1,6 @@
 package com.hoainhi.staywise.dtos;
 
+import com.hoainhi.staywise.enums.TrangThai;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -11,4 +12,6 @@ public class LoaiGiuongDTO {
     private String tenGiuong;
 
     private String hinhAnh;
+
+    private TrangThai trangThai;
 }

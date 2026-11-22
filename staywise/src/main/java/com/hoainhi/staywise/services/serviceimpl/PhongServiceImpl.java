@@ -47,6 +47,7 @@ public class PhongServiceImpl implements PhongService {
     @Autowired
     private Validator validator;
 
+
     @Override
     public Page<PhongDTO> showAll(String tuKhoa, int trang, int kichThuoc) {
 
@@ -72,23 +73,72 @@ public class PhongServiceImpl implements PhongService {
         }
 
         return pagePhong.map(phong -> {
+
+            // 1. Khởi tạo DTO
             PhongDTO dto = new PhongDTO();
 
-            BeanUtils.copyProperties(
-                    phong,
-                    dto,
-                    "homeStay"
+            // 2. Mapping thông tin cơ bản của phòng
+            dto.setId(phong.getId());
+
+            dto.setMaHomeStay(
+                    phong.getHomeStay() != null
+                            ? phong.getHomeStay().getId()
+                            : null
             );
 
-            if (phong.getHomeStay() != null) {
-                dto.setMaHomeStay(
-                        phong.getHomeStay().getId()
-                );
-            }
+            dto.setTenPhong(phong.getTenPhong());
+            dto.setMoTa(phong.getMoTa());
+            dto.setDienTich(phong.getDienTich());
+            dto.setLoaiPhong(phong.getLoaiPhong());
+            dto.setTrangThaiPhong(phong.getTrangThaiPhong());
+
+            // 3. Mapping danh sách giường
+            dto.setDanhSachGiuong(
+                    phong.getChiTietGiuongs().stream()
+                            .map(chiTiet -> {
+
+                                ChiTietGiuongDTO giuongDTO =
+                                        new ChiTietGiuongDTO();
+
+                                giuongDTO.setMaLoaiGiuong(
+                                        chiTiet.getLoaiGiuong().getId()
+                                );
+
+                                giuongDTO.setTenGiuong(
+                                        chiTiet.getLoaiGiuong().getTenGiuong()
+                                );
+
+                                giuongDTO.setSoLuong(
+                                        chiTiet.getSoLuong()
+                                );
+
+                                return giuongDTO;
+                            })
+                            .toList()
+            );
+
+            // 4. Mapping danh sách sức chứa
+            dto.setDanhSachSoNguoi(
+                    phong.getSoNguois().stream()
+                            .map(soNguoi -> {
+
+                                SoNguoiDTO soNguoiDTO = new SoNguoiDTO();
+
+                                soNguoiDTO.setId(soNguoi.getId());
+                                soNguoiDTO.setSoLuong(soNguoi.getSoLuong());
+                                soNguoiDTO.setTheLoaiNguoi(
+                                        soNguoi.getTheLoaiNguoi()
+                                );
+
+                                return soNguoiDTO;
+                            })
+                            .toList()
+            );
 
             return dto;
         });
     }
+
 
     @Override
 

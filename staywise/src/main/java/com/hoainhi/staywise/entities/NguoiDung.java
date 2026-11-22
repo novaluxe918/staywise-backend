@@ -3,12 +3,15 @@ package com.hoainhi.staywise.entities;
 import com.hoainhi.staywise.enums.TrangThaiUser;
 import com.hoainhi.staywise.enums.VaiTro;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "nguoidung")
 public class NguoiDung {

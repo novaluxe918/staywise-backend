@@ -10,8 +10,7 @@ import java.io.IOException;
 
 @Service
 public interface LoaiGiuongService {
-    LoaiGiuong themLoaiGiuong(LoaiGiuong loaiGiuong);
-    Page<LoaiGiuong> timKiem(String tuKhoa, int trang, int kichThuoc);
+    Page<LoaiGiuongDTO> timKiem(String tuKhoa, int trang, int kichThuoc);
     void xoa(Long id);
     LoaiGiuong getById(Long id);
     String saveLoaiGiuong(LoaiGiuongDTO loaiGiuongDTO, MultipartFile file) throws IOException;

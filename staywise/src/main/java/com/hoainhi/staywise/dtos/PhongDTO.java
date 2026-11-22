@@ -1,5 +1,7 @@
 package com.hoainhi.staywise.dtos;
 
+import com.hoainhi.staywise.enums.LoaiPhong;
+import com.hoainhi.staywise.enums.TrangThaiPhong;
 import com.hoainhi.staywise.validations.CapNhat;
 import com.hoainhi.staywise.validations.ThemMoi;
 import jakarta.validation.constraints.DecimalMin;
@@ -26,8 +28,10 @@ public class PhongDTO {
     @DecimalMin(value = "0.1", message = "Diện tích phải lớn hơn 0")
     private BigDecimal dienTich;
 
-    @NotBlank(message = "Loai phong khong duoc de trong", groups = {ThemMoi.class})
-    private String loaiPhong;
+
+    private TrangThaiPhong trangThaiPhong;
+
+    private LoaiPhong loaiPhong;
 
     private List<ChiTietGiuongDTO> danhSachGiuong = new ArrayList<>();
 

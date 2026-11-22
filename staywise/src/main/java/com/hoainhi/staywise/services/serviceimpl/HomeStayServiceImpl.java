@@ -339,12 +339,6 @@ public class HomeStayServiceImpl implements HomeStayService {
                         new RuntimeException("Không tìm thấy tài khoản!")
                 );
 
-
-        if (nguoiDung.getVaiTro() != VaiTro.OWNER) {
-            throw new RuntimeException("Bạn không có quyền truy cập!");
-        }
-
-
         return homeStayRepository.findHomeStayDaDuyet(
                 nguoiDung.getId(),
                 TrangThaiHomeStay.DA_DUYET

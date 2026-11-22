@@ -23,19 +23,48 @@ public class LoaiGiuongServiceImpl implements LoaiGiuongService {
     @Autowired
     private CloudinaryService cloudinaryService;
 
-    @Override
-    public LoaiGiuong themLoaiGiuong(LoaiGiuong loaiGiuong) {
-        return loaiGiuongRepository.save(loaiGiuong);
-    }
+
 
     @Override
-    public Page<LoaiGiuong> timKiem(String tuKhoa, int trang, int kichThuoc) {
-        Pageable pageable = PageRequest.of(trang, kichThuoc, Sort.by("id").descending());
-        if(tuKhoa == null || "".equals(tuKhoa.trim())){
-             return  loaiGiuongRepository.findByTrangThaiNot(TrangThai.DA_XOA, pageable);
+    public Page<LoaiGiuongDTO> timKiem(String tuKhoa, int trang, int kichThuoc) {
+
+        Pageable pageable = PageRequest.of(
+                trang,
+                kichThuoc,
+                Sort.by("id").descending()
+        );
+
+        Page<LoaiGiuong> pageLoaiGiuong;
+
+        if (tuKhoa == null || tuKhoa.trim().isEmpty()) {
+
+            pageLoaiGiuong = loaiGiuongRepository.findByTrangThaiNot(
+                    TrangThai.DA_XOA,
+                    pageable
+            );
+
+        } else {
+
+            pageLoaiGiuong = loaiGiuongRepository.findByTenGiuongContainingIgnoreCase(
+                    tuKhoa.trim(),
+                    TrangThai.DA_XOA,
+                    pageable
+            );
         }
-        return loaiGiuongRepository.findByTenGiuongContainingIgnoreCase(tuKhoa, TrangThai.DA_XOA, pageable);
+
+        return pageLoaiGiuong.map(loaiGiuong -> {
+
+            LoaiGiuongDTO dto = new LoaiGiuongDTO();
+
+            dto.setId(loaiGiuong.getId());
+            dto.setTenGiuong(loaiGiuong.getTenGiuong());
+            dto.setHinhAnh(loaiGiuong.getHinhAnh());
+            dto.setTrangThai(loaiGiuong.getTrangThai());
+
+            return dto;
+        });
     }
+
 
     @Override
     public void xoa(Long id) {
