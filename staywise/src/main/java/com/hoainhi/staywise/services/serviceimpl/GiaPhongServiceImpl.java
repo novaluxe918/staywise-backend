@@ -3,6 +3,7 @@ package com.hoainhi.staywise.services.serviceimpl;
 import com.hoainhi.staywise.dtos.GiaPhongDTO;
 import com.hoainhi.staywise.entities.GiaPhong;
 import com.hoainhi.staywise.entities.Phong;
+import com.hoainhi.staywise.enums.TrangThai;
 import com.hoainhi.staywise.reponsitories.GiaPhongRepository;
 import com.hoainhi.staywise.reponsitories.PhongRepository;
 import com.hoainhi.staywise.services.GiaPhongService;
@@ -11,6 +12,10 @@ import com.hoainhi.staywise.validations.ThemMoi;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -44,6 +49,7 @@ public class GiaPhongServiceImpl implements GiaPhongService {
 
         if(themMoi){
             giaPhong = new GiaPhong();
+            giaPhong.setTrangThai(TrangThai.DANG_HOAT_DONG);
 
         }else {
             giaPhong = giaPhongRepository.findById(giaPhongDTO.getId()).orElseThrow(() ->
@@ -83,5 +89,41 @@ public class GiaPhongServiceImpl implements GiaPhongService {
 
         giaPhongRepository.save(giaPhong);
         return themMoi ? "Them thong tin thanh cong" : "Cap nhat thong tin thanh cong";
+    }
+
+    @Override
+    public Page<GiaPhongDTO> showAllGiaPhong(String tuKhoa, int trang, int kichThuoc) {
+        Pageable pageable = PageRequest.of(
+                trang,
+                kichThuoc,
+                Sort.by("id").descending()
+        );
+
+        Page<GiaPhong> pageGiaPhong =
+                giaPhongRepository.findByPhong_TenPhongContainingIgnoreCase(
+                        tuKhoa == null ? "" : tuKhoa.trim(),
+                        pageable
+                );
+
+        return pageGiaPhong.map(giaPhong -> {
+
+            GiaPhongDTO dto = new GiaPhongDTO();
+
+            dto.setId(giaPhong.getId());
+            dto.setMaPhong(giaPhong.getPhong().getId());
+            dto.setTenPhong(giaPhong.getPhong().getTenPhong());
+            dto.setGiaPhong(giaPhong.getGiaPhong());
+            dto.setNgayBatDau(giaPhong.getNgayBatDau());
+            dto.setNgayKetThuc(giaPhong.getNgayKetThuc());
+
+            return dto;
+        });
+    }
+
+    @Override
+    public void xoa(Long id) {
+        GiaPhong giaPhong = giaPhongRepository.findById(id).orElseThrow();
+        giaPhong.setTrangThai(TrangThai.DA_XOA);
+        giaPhongRepository.save(giaPhong);
     }
 }

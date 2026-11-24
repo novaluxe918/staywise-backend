@@ -1,6 +1,7 @@
 package com.hoainhi.staywise.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hoainhi.staywise.enums.TrangThai;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -31,4 +32,7 @@ public class GiaPhong {
     @Column(name = "ngayKetThuc")
     private LocalDateTime ngayKetThuc;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "trangthai", nullable = false)
+    private TrangThai trangThai;
 }

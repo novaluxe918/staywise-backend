@@ -14,6 +14,8 @@ public class GiaPhongDTO {
 
     private Long maPhong;
 
+    private String tenPhong;
+
     @NotNull(message = "Giá phòng không được để trống", groups = ThemMoi.class)
     @DecimalMin(value = "0.0", inclusive = false,
             message = "Giá phòng phải lớn hơn 0")
