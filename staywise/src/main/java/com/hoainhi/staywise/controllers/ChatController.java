@@ -2,7 +2,7 @@
 package com.hoainhi.staywise.controllers;
 
 import com.google.firebase.auth.FirebaseAuthException;
-import com.hoainhi.staywise.dtos.FirebaseTokenResponse;
+import com.hoainhi.staywise.response.FirebaseTokenResponse;
 import com.hoainhi.staywise.entities.NguoiDung;
 import com.hoainhi.staywise.enums.VaiTro;
 import com.hoainhi.staywise.reponsitories.NguoiDungRepository;

@@ -1,4 +1,4 @@
-package com.hoainhi.staywise.dtos;
+package com.hoainhi.staywise.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

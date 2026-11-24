@@ -58,6 +58,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/hanh-chinh/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/homestay/**").permitAll()
+                        .requestMatchers("/du-doan-gia/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

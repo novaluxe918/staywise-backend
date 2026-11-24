@@ -3,13 +3,14 @@ package com.hoainhi.staywise.services.serviceimpl;
 import com.hoainhi.staywise.dtos.*;
 import com.hoainhi.staywise.entities.HoSoChuHomeStay;
 import com.hoainhi.staywise.entities.NguoiDung;
-import com.hoainhi.staywise.enums.TrangThaiHomeStay;
 import com.hoainhi.staywise.enums.TrangThaiUser;
 import com.hoainhi.staywise.enums.TrangThaiXacMinh;
 import com.hoainhi.staywise.enums.VaiTro;
 import com.hoainhi.staywise.reponsitories.HoSoChuHomeStayRepository;
 import com.hoainhi.staywise.reponsitories.HomeStayRepository;
 import com.hoainhi.staywise.reponsitories.NguoiDungRepository;
+import com.hoainhi.staywise.response.HoSoChuHomeStayResponseDTO;
+import com.hoainhi.staywise.response.NguoiDungResponseDTO;
 import com.hoainhi.staywise.services.NguoiDungService;
 import com.hoainhi.staywise.services.cloudinary.CloudinaryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class NguoiDungServiceImpl implements NguoiDungService {

@@ -3,12 +3,13 @@ package com.hoainhi.staywise.services;
 import com.hoainhi.staywise.dtos.*;
 import com.hoainhi.staywise.enums.TrangThaiUser;
 import com.hoainhi.staywise.enums.VaiTro;
+import com.hoainhi.staywise.response.HoSoChuHomeStayResponseDTO;
+import com.hoainhi.staywise.response.NguoiDungResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @Service
 public interface NguoiDungService {

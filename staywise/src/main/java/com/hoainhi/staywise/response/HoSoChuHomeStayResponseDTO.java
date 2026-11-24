@@ -1,4 +1,4 @@
-package com.hoainhi.staywise.dtos;
+package com.hoainhi.staywise.response;
 
 import com.hoainhi.staywise.enums.TrangThaiXacMinh;
 import lombok.Data;

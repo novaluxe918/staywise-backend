@@ -1,8 +1,4 @@
-package com.hoainhi.staywise.dtos;
-
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
+package com.hoainhi.staywise.response;
 
 
 public record DangNhapResponse(

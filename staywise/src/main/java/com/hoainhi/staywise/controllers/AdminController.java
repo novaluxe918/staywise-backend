@@ -1,19 +1,15 @@
 package com.hoainhi.staywise.controllers;
 
 import com.hoainhi.staywise.dtos.CapNhatTrangThaiXacMinhDTO;
-import com.hoainhi.staywise.dtos.NguoiDungResponseDTO;
+import com.hoainhi.staywise.response.NguoiDungResponseDTO;
 import com.hoainhi.staywise.dtos.TuChoiHomeStayDTO;
-import com.hoainhi.staywise.entities.NguoiDung;
 import com.hoainhi.staywise.services.serviceimpl.HomeStayServiceImpl;
 import com.hoainhi.staywise.services.serviceimpl.NguoiDungServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 
 @RestController

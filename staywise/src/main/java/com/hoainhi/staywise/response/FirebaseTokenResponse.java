@@ -1,4 +1,4 @@
-package com.hoainhi.staywise.dtos;
+package com.hoainhi.staywise.response;
 
 public record FirebaseTokenResponse(
         String firebaseToken,

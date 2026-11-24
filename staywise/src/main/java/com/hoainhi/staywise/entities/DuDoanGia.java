@@ -29,6 +29,9 @@ public class DuDoanGia {
     @Column(name = "doTinCay", precision = 5, scale = 2)
     private BigDecimal doTinCay;
 
+    @Column(name = "ngayApDung", nullable = false)
+    private LocalDate ngayApDung;
+
     @Column(name = "phienban")
     private String phienBan;
 

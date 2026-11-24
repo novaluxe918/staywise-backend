@@ -2,7 +2,7 @@ package com.hoainhi.staywise.controllers;
 
 import com.hoainhi.staywise.dtos.HomeStayDTO;
 import com.hoainhi.staywise.dtos.HomeStayOptionDTO;
-import com.hoainhi.staywise.dtos.TheLoaiHomeStayResponse;
+import com.hoainhi.staywise.response.TheLoaiHomeStayResponse;
 import com.hoainhi.staywise.entities.NguoiDung;
 import com.hoainhi.staywise.enums.TheLoaiHomeStay;
 import com.hoainhi.staywise.enums.VaiTro;
@@ -14,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

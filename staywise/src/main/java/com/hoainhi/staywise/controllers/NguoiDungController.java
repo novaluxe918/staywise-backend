@@ -2,7 +2,7 @@ package com.hoainhi.staywise.controllers;
 
 import com.hoainhi.staywise.dtos.CapNhatTrangThaiUserDTO;
 import com.hoainhi.staywise.dtos.NguoiDungDTO;
-import com.hoainhi.staywise.dtos.NguoiDungResponseDTO;
+import com.hoainhi.staywise.response.NguoiDungResponseDTO;
 import com.hoainhi.staywise.entities.NguoiDung;
 import com.hoainhi.staywise.enums.TrangThaiUser;
 import com.hoainhi.staywise.enums.VaiTro;
@@ -14,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
