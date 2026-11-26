@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public interface PhongService {
 
-    Page<PhongDTO> showAll(String tuKhoa, int trang, int kichThuoc);
+    Page<PhongDTO> showAll(String tuKhoa, int trang, int kichThuoc,  Long maHomeStay);
     void xoa(Long id);
 
     String savePhong(PhongDTO phongDTO);

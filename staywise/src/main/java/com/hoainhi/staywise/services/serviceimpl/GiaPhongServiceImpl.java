@@ -19,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -92,21 +93,31 @@ public class GiaPhongServiceImpl implements GiaPhongService {
     }
 
     @Override
-    public Page<GiaPhongDTO> showAllGiaPhong(String tuKhoa, int trang, int kichThuoc) {
+    public Page<GiaPhongDTO> showAllGiaPhong(
+            String tuKhoa,
+            int trang,
+            int kichThuoc,
+            Long maHomeStay
+    ) {
         Pageable pageable = PageRequest.of(
                 trang,
                 kichThuoc,
                 Sort.by("id").descending()
         );
 
+        if (maHomeStay == null) {
+            throw new RuntimeException("Vui lòng chọn HomeStay!");
+        }
+
         Page<GiaPhong> pageGiaPhong =
-                giaPhongRepository.findByPhong_TenPhongContainingIgnoreCase(
-                        tuKhoa == null ? "" : tuKhoa.trim(),
-                        pageable
-                );
+                giaPhongRepository
+                        .findByPhong_HomeStay_IdAndPhong_TenPhongContainingIgnoreCase(
+                                maHomeStay,
+                                tuKhoa == null ? "" : tuKhoa.trim(),
+                                pageable
+                        );
 
         return pageGiaPhong.map(giaPhong -> {
-
             GiaPhongDTO dto = new GiaPhongDTO();
 
             dto.setId(giaPhong.getId());
@@ -125,5 +136,22 @@ public class GiaPhongServiceImpl implements GiaPhongService {
         GiaPhong giaPhong = giaPhongRepository.findById(id).orElseThrow();
         giaPhong.setTrangThai(TrangThai.DA_XOA);
         giaPhongRepository.save(giaPhong);
+    }
+
+    @Override
+    public List<GiaPhongDTO> getGiaPhongByMaPhong(Long maPhong) {
+        List<GiaPhong> danhSachGiaPhong = giaPhongRepository.findByPhong_IdOrderByNgayBatDauAsc(maPhong);
+        return danhSachGiaPhong.stream().map(giaPhong -> {
+            GiaPhongDTO dto = new GiaPhongDTO();
+
+            dto.setId(giaPhong.getId());
+            dto.setMaPhong(giaPhong.getPhong().getId());
+            dto.setTenPhong(giaPhong.getPhong().getTenPhong());
+            dto.setGiaPhong(giaPhong.getGiaPhong());
+            dto.setNgayBatDau(giaPhong.getNgayBatDau());
+            dto.setNgayKetThuc(giaPhong.getNgayKetThuc());
+
+            return dto;
+        }).toList();
     }
 }

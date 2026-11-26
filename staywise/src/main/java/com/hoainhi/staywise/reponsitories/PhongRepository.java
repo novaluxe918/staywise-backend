@@ -16,4 +16,20 @@ public interface PhongRepository extends JpaRepository<Phong, Long> {
             TrangThaiPhong trangThaiPhong,
             Pageable pageable
     );
+
+    Page<Phong> findByHomeStay_IdAndTrangThaiPhongNot(
+            Long maHomeStay,
+            TrangThaiPhong trangThaiPhong,
+            Pageable pageable
+    );
+
+
+    Page<Phong> findByHomeStay_IdAndTenPhongContainingIgnoreCaseAndTrangThaiPhongNot(
+            Long maHomeStay,
+            String tuKhoa,
+            TrangThaiPhong trangThaiPhong,
+            Pageable pageable
+    );
+
+
 }

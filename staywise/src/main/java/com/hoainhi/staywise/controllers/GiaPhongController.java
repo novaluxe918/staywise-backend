@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/giaPhong")
 public class GiaPhongController {
@@ -19,17 +21,18 @@ public class GiaPhongController {
 
     @GetMapping("/show-all")
     public ResponseEntity<Page<GiaPhongDTO>> showAllGiaPhong(
-
             @RequestParam(defaultValue = "") String tuKhoa,
-
             @RequestParam(defaultValue = "0") int trang,
-
-            @RequestParam(defaultValue = "5") int kichThuoc
-
+            @RequestParam(defaultValue = "5") int kichThuoc,
+            @RequestParam Long maHomeStay
     ) {
-
         return ResponseEntity.ok(
-                giaPhongService.showAllGiaPhong(tuKhoa, trang, kichThuoc)
+                giaPhongService.showAllGiaPhong(
+                        tuKhoa,
+                        trang,
+                        kichThuoc,
+                        maHomeStay
+                )
         );
     }
 
@@ -51,6 +54,13 @@ public class GiaPhongController {
         giaPhongService.xoa(id);
         return ResponseEntity.ok("Xóa giá phòng thành công");
     }
+
+    @GetMapping("/phong/{maPhong}")
+    public ResponseEntity<List<GiaPhongDTO>> getGiaPhognByMaPhong(        @PathVariable Long maPhong
+    ){
+      return ResponseEntity.ok( giaPhongService.getGiaPhongByMaPhong(maPhong));
+    }
+
 
 
 }

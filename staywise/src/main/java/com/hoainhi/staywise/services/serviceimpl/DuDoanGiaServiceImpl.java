@@ -134,10 +134,13 @@ public class DuDoanGiaServiceImpl implements DuDoanGiaService {
                 .build();
     }
 
+
+
     @Override
-    public List<LichSuDuDoanGiaResponse> xemLichSuDuDoanGia() {
+    public List<LichSuDuDoanGiaResponse> xemLichSuDuDoanGia(Long maHomeStay) {
+
         List<DuDoanGia> danhSach = duDoanGiaRepository
-                .findAllByOrderByNgayDuDoanDesc();
+                .findByPhong_HomeStay_IdOrderByNgayDuDoanDesc(maHomeStay);
 
         return danhSach.stream()
                 .map(duDoan -> LichSuDuDoanGiaResponse.builder()
@@ -155,6 +158,49 @@ public class DuDoanGiaServiceImpl implements DuDoanGiaService {
                 .toList();
     }
 
+    @Override
+    public List<LichSuDuDoanGiaResponse> timKiemLichSuDuDoanGia(Long maPhong, LocalDate ngayApDung) {
+        List<DuDoanGia> danhSach;
+        if (maPhong != null && ngayApDung != null) {
+            danhSach = duDoanGiaRepository
+                    .findByPhong_IdAndNgayApDungOrderByNgayDuDoanDesc(
+                            maPhong, ngayApDung);
+        }
+
+        // Trường hợp 2: Chỉ có mã phòng
+        else if (maPhong != null) {
+            danhSach = duDoanGiaRepository
+                    .findByPhong_IdOrderByNgayDuDoanDesc(maPhong);
+        }
+
+
+        else if (ngayApDung != null) {
+            danhSach = duDoanGiaRepository
+                    .findByNgayApDungOrderByNgayDuDoanDesc(ngayApDung);
+        }
+
+
+        else {
+            danhSach = duDoanGiaRepository
+                    .findAllByOrderByNgayDuDoanDesc();
+        }
+
+
+        return danhSach.stream()
+                .map(duDoan -> LichSuDuDoanGiaResponse.builder()
+                        .id(duDoan.getId())
+                        .maPhong(duDoan.getPhong().getId())
+                        .tenPhong(duDoan.getPhong().getTenPhong())
+                        .tenHomeStay(duDoan.getPhong()
+                                .getHomeStay().getTenHomeStay())
+                        .ngayDuDoan(duDoan.getNgayDuDoan())
+                        .ngayApDung(duDoan.getNgayApDung())
+                        .giaDuDoan(duDoan.getGiaDuDoan())
+                        .doTinCay(duDoan.getDoTinCay())
+                        .phienBan(duDoan.getPhienBan())
+                        .build())
+                .toList();
+    }
 
 
 }

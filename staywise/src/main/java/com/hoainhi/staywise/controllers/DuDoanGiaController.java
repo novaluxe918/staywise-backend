@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -28,11 +29,25 @@ public class DuDoanGiaController {
 
 
     @GetMapping("/lich-su")
-    public ResponseEntity<List<LichSuDuDoanGiaResponse>> xemLichSu() {
-
+    public ResponseEntity<List<LichSuDuDoanGiaResponse>> xemLichSu(
+            @RequestParam Long maHomeStay
+    ) {
         return ResponseEntity.ok(
-                duDoanGiaService.xemLichSuDuDoanGia()
+                duDoanGiaService.xemLichSuDuDoanGia(maHomeStay)
         );
     }
+
+    @GetMapping("/tim-kiem-lich-su")
+    public ResponseEntity<List<LichSuDuDoanGiaResponse>> timKiemLichSu(
+            @RequestParam(required = false) Long maPhong,
+            @RequestParam(required = false) LocalDate ngayApDung) {
+
+        return ResponseEntity.ok(
+                duDoanGiaService.timKiemLichSuDuDoanGia(
+                        maPhong, ngayApDung
+                )
+        );
+    }
+
 
 }

@@ -15,7 +15,8 @@ import java.util.List;
 @Repository
 public interface GiaPhongRepository extends JpaRepository<GiaPhong, Long> {
 
-    Page<GiaPhong> findByPhong_TenPhongContainingIgnoreCase(
+    Page<GiaPhong> findByPhong_HomeStay_IdAndPhong_TenPhongContainingIgnoreCase(
+            Long maHomeStay,
             String tuKhoa,
             Pageable pageable
     );
@@ -35,4 +36,7 @@ public interface GiaPhongRepository extends JpaRepository<GiaPhong, Long> {
             @Param("dauNgay") LocalDateTime dauNgay,
             @Param("cuoiNgay") LocalDateTime cuoiNgay
     );
+
+
+    List<GiaPhong> findByPhong_IdOrderByNgayBatDauAsc(Long maPhong);
 }

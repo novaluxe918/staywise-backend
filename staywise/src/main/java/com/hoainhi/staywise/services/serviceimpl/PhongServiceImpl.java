@@ -49,7 +49,12 @@ public class PhongServiceImpl implements PhongService {
 
 
     @Override
-    public Page<PhongDTO> showAll(String tuKhoa, int trang, int kichThuoc) {
+    public Page<PhongDTO> showAll(
+            String tuKhoa,
+            int trang,
+            int kichThuoc,
+            Long maHomeStay
+    ) {
 
         Pageable pageable = PageRequest.of(
                 trang,
@@ -59,17 +64,43 @@ public class PhongServiceImpl implements PhongService {
 
         Page<Phong> pagePhong;
 
-        if (tuKhoa == null || tuKhoa.trim().isEmpty()) {
-            pagePhong = phongRepository.findByTrangThaiPhongNot(
-                    TrangThaiPhong.DA_XOA,
-                    pageable
-            );
+        boolean coTuKhoa = tuKhoa != null && !tuKhoa.trim().isEmpty();
+
+        if (maHomeStay != null) {
+
+            if (coTuKhoa) {
+                pagePhong =
+                        phongRepository
+                                .findByHomeStay_IdAndTenPhongContainingIgnoreCaseAndTrangThaiPhongNot(
+                                        maHomeStay,
+                                        tuKhoa.trim(),
+                                        TrangThaiPhong.DA_XOA,
+                                        pageable
+                                );
+            } else {
+                pagePhong =
+                        phongRepository
+                                .findByHomeStay_IdAndTrangThaiPhongNot(
+                                        maHomeStay,
+                                        TrangThaiPhong.DA_XOA,
+                                        pageable
+                                );
+            }
+
         } else {
-            pagePhong = phongRepository.findByTenPhongContainingIgnoreCase(
-                    tuKhoa.trim(),
-                    TrangThaiPhong.DA_XOA,
-                    pageable
-            );
+
+            if (coTuKhoa) {
+                pagePhong = phongRepository.findByTenPhongContainingIgnoreCase(
+                        tuKhoa.trim(),
+                        TrangThaiPhong.DA_XOA,
+                        pageable
+                );
+            } else {
+                pagePhong = phongRepository.findByTrangThaiPhongNot(
+                        TrangThaiPhong.DA_XOA,
+                        pageable
+                );
+            }
         }
 
         return pagePhong.map(phong -> {

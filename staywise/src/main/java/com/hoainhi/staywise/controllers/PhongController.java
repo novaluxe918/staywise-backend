@@ -21,10 +21,20 @@ public class PhongController {
     private PhongServiceImpl phongService;
 
     @GetMapping("/timKiem")
-    public ResponseEntity<?> showAll( @RequestParam(defaultValue = "") String tuKhoa,
-                                      @RequestParam(defaultValue = "0") int trang,  @RequestParam(defaultValue = "5") int kichThuoc){
-        Page<PhongDTO> phongs = phongService.showAll(tuKhoa , trang, kichThuoc);
-        return ResponseEntity.ok(phongs);
+    public ResponseEntity<?> timKiem(
+            @RequestParam(required = false) String tuKhoa,
+            @RequestParam(defaultValue = "0") int trang,
+            @RequestParam(defaultValue = "5") int kichThuoc,
+            @RequestParam(required = false) Long maHomeStay
+    ) {
+        return ResponseEntity.ok(
+                phongService.showAll(
+                        tuKhoa,
+                        trang,
+                        kichThuoc,
+                        maHomeStay
+                )
+        );
     }
 
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
