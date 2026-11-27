@@ -105,9 +105,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * Hàm phụ trợ: duyệt qua danh sách cookie trong request để lấy giá trị access_token
-     */
     private String layTokenTuCookie(HttpServletRequest request) {
         if (request.getCookies() == null) {
             return null;
