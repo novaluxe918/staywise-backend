@@ -66,43 +66,26 @@ public class PhongServiceImpl implements PhongService {
 
         boolean coTuKhoa = tuKhoa != null && !tuKhoa.trim().isEmpty();
 
-        if (maHomeStay != null) {
-
-            if (coTuKhoa) {
-                pagePhong =
-                        phongRepository
-                                .findByHomeStay_IdAndTenPhongContainingIgnoreCaseAndTrangThaiPhongNot(
-                                        maHomeStay,
-                                        tuKhoa.trim(),
-                                        TrangThaiPhong.DA_XOA,
-                                        pageable
-                                );
-            } else {
-                pagePhong =
-                        phongRepository
-                                .findByHomeStay_IdAndTrangThaiPhongNot(
-                                        maHomeStay,
-                                        TrangThaiPhong.DA_XOA,
-                                        pageable
-                                );
-            }
-
-        } else {
-
-            if (coTuKhoa) {
-                pagePhong = phongRepository.findByTenPhongContainingIgnoreCase(
-                        tuKhoa.trim(),
-                        TrangThaiPhong.DA_XOA,
-                        pageable
-                );
-            } else {
-                pagePhong = phongRepository.findByTrangThaiPhongNot(
-                        TrangThaiPhong.DA_XOA,
-                        pageable
-                );
-            }
+        if (maHomeStay == null) {
+            return Page.empty(pageable);
         }
 
+        if (coTuKhoa) {
+            pagePhong = phongRepository
+                    .findByHomeStay_IdAndTenPhongContainingIgnoreCaseAndTrangThaiPhongNot(
+                            maHomeStay,
+                            tuKhoa.trim(),
+                            TrangThaiPhong.DA_XOA,
+                            pageable
+                    );
+        } else {
+            pagePhong = phongRepository
+                    .findByHomeStay_IdAndTrangThaiPhongNot(
+                            maHomeStay,
+                            TrangThaiPhong.DA_XOA,
+                            pageable
+                    );
+        }
         return pagePhong.map(phong -> {
 
             // 1. Khởi tạo DTO

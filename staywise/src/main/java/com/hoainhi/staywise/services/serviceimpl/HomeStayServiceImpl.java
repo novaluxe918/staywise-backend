@@ -4,6 +4,8 @@ import com.hoainhi.staywise.dtos.HinhAnhHomeStayDTO;
 import com.hoainhi.staywise.dtos.HomeStayDTO;
 import com.hoainhi.staywise.dtos.HomeStayOptionDTO;
 import com.hoainhi.staywise.entities.*;
+import com.hoainhi.staywise.enums.TheLoaiHomeStay;
+import com.hoainhi.staywise.enums.TrangThai;
 import com.hoainhi.staywise.enums.TrangThaiHomeStay;
 import com.hoainhi.staywise.enums.VaiTro;
 import com.hoainhi.staywise.reponsitories.*;
@@ -23,9 +25,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class HomeStayServiceImpl implements HomeStayService {
@@ -58,6 +65,9 @@ public class HomeStayServiceImpl implements HomeStayService {
 
     @Autowired
     private HomeStayDichVuRepository homeStayDichVuRepository;
+
+    @Autowired
+    private GiaPhongRepository giaPhongRepository;
 
     @Autowired
     private CloudinaryService cloudinaryService;
@@ -417,6 +427,87 @@ public class HomeStayServiceImpl implements HomeStayService {
 
 
         return dto;
+    }
+
+    @Override
+    public List<HomeStayDTO> layHomeStayTheoTheLoai(TheLoaiHomeStay theLoai) {
+
+        Pageable pageable = PageRequest.of(0, 4);
+
+        Page<HomeStay> page =
+                homeStayRepository.findByTrangThaiHomeStayAndTheLoaiHomeStay(
+                        TrangThaiHomeStay.DA_DUYET,
+                        theLoai,
+                        pageable
+                );
+
+        List<HomeStay> danhSachHomeStay = page.getContent();
+
+        // Lấy danh sách mã HomeStay
+        List<Long> danhSachMaHomeStay = danhSachHomeStay.stream()
+                .map(HomeStay::getId)
+                .toList();
+
+        // Lấy giá thấp nhất đang có hiệu lực của các HomeStay
+        Map<Long, BigDecimal> mapGiaThapNhat = new HashMap<>();
+
+        if (!danhSachMaHomeStay.isEmpty()) {
+            List<Object[]> ketQuaGia =
+                    giaPhongRepository.findGiaThapNhatTheoDanhSachHomeStay(
+                            danhSachMaHomeStay,
+                            TrangThai.DANG_HOAT_DONG,
+                            LocalDateTime.now()
+                    );
+
+            mapGiaThapNhat = ketQuaGia.stream()
+                    .collect(Collectors.toMap(
+                            row -> (Long) row[0],
+                            row -> (BigDecimal) row[1]
+                    ));
+        }
+
+        // Mapping HomeStayDTO
+        Map<Long, BigDecimal> finalMapGiaThapNhat = mapGiaThapNhat;
+
+        return danhSachHomeStay.stream()
+                .map(hs -> {
+                    HomeStayDTO dto = new HomeStayDTO();
+
+                    dto.setId(hs.getId());
+                    dto.setTenHomeStay(hs.getTenHomeStay());
+                    dto.setMoTa(hs.getMoTa());
+                    dto.setDiaChi(hs.getDiaChi());
+                    dto.setPhuongXa(hs.getPhuongXa());
+                    dto.setTinhThanh(hs.getTinhThanh());
+                    dto.setTheLoaiHomeStay(hs.getTheLoaiHomeStay());
+
+                    // Gán giá thấp nhất
+                    dto.setGiaThapNhat(
+                            finalMapGiaThapNhat.get(hs.getId())
+                    );
+
+                    // Map danh sách ảnh
+                    List<HinhAnhHomeStayDTO> danhSachAnh =
+                            hs.getHomeStays().stream()
+                                    .map(anh -> {
+                                        HinhAnhHomeStayDTO anhDTO =
+                                                new HinhAnhHomeStayDTO();
+
+                                        anhDTO.setId(anh.getId());
+                                        anhDTO.setDuongDan(anh.getDuongDan());
+                                        anhDTO.setLaAnhDaiDien(
+                                                anh.isLaAnhDaiDien()
+                                        );
+
+                                        return anhDTO;
+                                    })
+                                    .toList();
+
+                    dto.setDanhSachHinhAnh(danhSachAnh);
+
+                    return dto;
+                })
+                .toList();
     }
 
 

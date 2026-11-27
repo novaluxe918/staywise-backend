@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +56,8 @@ public class HomeStayDTO {
     private TrangThaiHomeStay trangThaiHomeStay;
 
     private String tenTheLoaiHomeStay;
+
+    private BigDecimal giaThapNhat;
 
     private List<Long> danhSachTienIchHS = new ArrayList<>();
     private List<Long> danhSachDichVuHS = new ArrayList<>();

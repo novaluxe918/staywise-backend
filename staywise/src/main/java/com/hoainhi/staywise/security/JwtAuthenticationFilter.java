@@ -1,4 +1,3 @@
-
 package com.hoainhi.staywise.security;
 
 import com.hoainhi.staywise.entities.NguoiDung;
@@ -15,9 +14,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.web.filter.OncePerRequestFilter;
-
 import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,7 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtService jwtService;
 
     @Autowired
-    private  NguoiDungRepository nguoiDungRepository;
+    private NguoiDungRepository nguoiDungRepository;
 
     @Override
     protected void doFilterInternal(
@@ -41,7 +39,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 1. Lấy token từ HttpOnly Cookie
         String token = layTokenTuCookie(request);
 
-        // Không có cookie token -> cho qua filter tiếp theo (Spring Security sẽ chặn nếu route yêu cầu đăng nhập)
         if (token == null) {
             filterChain.doFilter(request, response);
             return;
@@ -57,51 +54,42 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // 3. Lấy email từ token
             String email = jwtService.layEmailTuToken(token);
 
-            // 4. Chỉ xác thực nếu request chưa có Authentication
-            if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            // 4. Luôn ưu tiên xác thực theo token mới nhất (không giữ session cũ)
+            NguoiDung nguoiDung = nguoiDungRepository
+                    .findByEmail(email)
+                    .orElse(null);
 
-                NguoiDung nguoiDung = nguoiDungRepository
-                        .findByEmail(email)
-                        .orElse(null);
-
-                if (nguoiDung != null) {
-
-                    // 5. Kiểm tra tài khoản còn hoạt động
-                    if (nguoiDung.getTrangThaiUser()
-                            != com.hoainhi.staywise.enums.TrangThaiUser.DANG_HOAT_DONG) {
-                        filterChain.doFilter(request, response);
-                        return;
-                    }
-
-                    // 6. Đưa vai trò vào Spring Security (đảm bảo prefix ROLE_ nếu dùng hasRole)
-                    var authorities = List.of(
-                            new SimpleGrantedAuthority(
-                                    "ROLE_" + nguoiDung.getVaiTro().name()
-                            )
-                    );
-
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(
-                                    nguoiDung.getEmail(),
-                                    null,
-                                    authorities
-                            );
-
-                    authentication.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request)
-                    );
-
-                    // 7. Lưu thông tin xác thực vào context
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (nguoiDung != null) {
+                if (nguoiDung.getTrangThaiUser()
+                        != com.hoainhi.staywise.enums.TrangThaiUser.DANG_HOAT_DONG) {
+                    filterChain.doFilter(request, response);
+                    return;
                 }
+
+                var authorities = List.of(
+                        new SimpleGrantedAuthority(
+                                "ROLE_" + nguoiDung.getVaiTro().name()
+                        )
+                );
+
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                nguoiDung.getEmail(),
+                                null,
+                                authorities
+                        );
+
+                authentication.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
             }
 
         } catch (io.jsonwebtoken.JwtException | IllegalArgumentException e) {
-            // Token sai chữ ký, hết hạn hoặc bị can thiệp
             SecurityContextHolder.clearContext();
         }
 
-        // 8. Tiếp tục chuỗi filter
         filterChain.doFilter(request, response);
     }
 

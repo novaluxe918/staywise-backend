@@ -133,5 +133,13 @@ public class HomeStayController {
         }
     }
 
+    @GetMapping("/the-loai")
+    public ResponseEntity<List<HomeStayDTO>> layHomeStayTheoTheLoai(
+            @RequestParam TheLoaiHomeStay theLoai
+    ) {
+        return ResponseEntity.ok(
+                homeStayService.layHomeStayTheoTheLoai(theLoai)
+        );
+    }
 
 }

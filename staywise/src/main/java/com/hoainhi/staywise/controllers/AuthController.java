@@ -4,11 +4,14 @@ import com.hoainhi.staywise.dtos.DangKyDTO;
 import com.hoainhi.staywise.dtos.DangNhapDTO;
 import com.hoainhi.staywise.response.DangNhapResponse;
 import com.hoainhi.staywise.services.serviceimpl.AuthServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import tools.jackson.databind.ObjectMapper;
 
@@ -18,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-
 @RequestMapping("/auth")
 public class AuthController {
 
@@ -29,18 +31,30 @@ public class AuthController {
     private ObjectMapper objectMapper;
 
     @PostMapping("/dangKy")
-    public ResponseEntity<?> dangky(@Valid @RequestBody DangKyDTO dangKyDTO){
-       try{
-           authService.dangKy(dangKyDTO);
-           return ResponseEntity.ok().body("Dang ky thanh cong");
-       } catch (Exception e) {
-           return ResponseEntity.badRequest().body(e.getMessage());
-       }
+    public ResponseEntity<?> dangky(@Valid @RequestBody DangKyDTO dangKyDTO) {
+        try {
+            authService.dangKy(dangKyDTO);
+            return ResponseEntity.ok().body("Dang ky thanh cong");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/dangNhap")
-    public ResponseEntity<?> dangNhap(@RequestBody DangNhapDTO dangNhapDTO) throws Exception {
+    public ResponseEntity<?> dangNhap(
+            @RequestBody DangNhapDTO dangNhapDTO,
+            HttpServletRequest request
+    ) throws Exception {
+        // 1. Hủy session cũ nếu còn sót lại trên server
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        SecurityContextHolder.clearContext();
+
+        // 2. Xác thực tài khoản mới
         DangNhapResponse response = authService.dangNhap(dangNhapDTO);
+
         ResponseCookie tokenCookie = ResponseCookie.from("access_token", response.token())
                 .httpOnly(true)
                 .secure(false)
@@ -48,7 +62,6 @@ public class AuthController {
                 .maxAge(24 * 60 * 60)
                 .sameSite("Lax")
                 .build();
-
 
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("id", response.id());
@@ -67,28 +80,56 @@ public class AuthController {
                 .sameSite("Lax")
                 .build();
 
+        // Xóa JSESSIONID cũ ở trình duyệt
+        ResponseCookie clearSession = ResponseCookie.from("JSESSIONID", "")
+                .httpOnly(true)
+                .path("/")
+                .maxAge(0)
+                .build();
+
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, tokenCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, userCookie.toString())
+                .header(HttpHeaders.SET_COOKIE, clearSession.toString())
                 .body(userInfo);
     }
 
-
     @PostMapping("/dang-xuat")
-    public ResponseEntity<String> dangXuat() {
+    public ResponseEntity<String> dangXuat(HttpServletRequest request) {
+        // 1. Hủy hoàn toàn phiên làm việc trên server
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        SecurityContextHolder.clearContext();
+
+        // 2. Xóa toàn bộ cookie
         ResponseCookie clearToken = ResponseCookie.from("access_token", "")
-                .httpOnly(true).secure(false).path("/").maxAge(0).build();
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .sameSite("Lax")
+                .maxAge(0)
+                .build();
 
         ResponseCookie clearUser = ResponseCookie.from("user_info", "")
-                .httpOnly(false).secure(false).path("/").maxAge(0).build();
+                .httpOnly(false)
+                .secure(false)
+                .path("/")
+                .sameSite("Lax")
+                .maxAge(0)
+                .build();
+
+        ResponseCookie clearSession = ResponseCookie.from("JSESSIONID", "")
+                .httpOnly(true)
+                .path("/")
+                .maxAge(0)
+                .build();
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, clearToken.toString())
                 .header(HttpHeaders.SET_COOKIE, clearUser.toString())
+                .header(HttpHeaders.SET_COOKIE, clearSession.toString())
                 .body("Đăng xuất thành công");
     }
-
-
-
-
 }

@@ -39,4 +39,19 @@ public interface GiaPhongRepository extends JpaRepository<GiaPhong, Long> {
 
 
     List<GiaPhong> findByPhong_IdOrderByNgayBatDauAsc(Long maPhong);
+
+    @Query("""
+    SELECT gp.phong.homeStay.id, MIN(gp.giaPhong)
+    FROM GiaPhong gp
+    WHERE gp.phong.homeStay.id IN :danhSachMaHomeStay
+    AND gp.trangThai = :trangThai
+    AND gp.ngayBatDau <= :thoiDiem
+    AND gp.ngayKetThuc >= :thoiDiem
+    GROUP BY gp.phong.homeStay.id
+""")
+    List<Object[]> findGiaThapNhatTheoDanhSachHomeStay(
+            @Param("danhSachMaHomeStay") List<Long> danhSachMaHomeStay,
+            @Param("trangThai") TrangThai trangThai,
+            @Param("thoiDiem") LocalDateTime thoiDiem
+    );
 }

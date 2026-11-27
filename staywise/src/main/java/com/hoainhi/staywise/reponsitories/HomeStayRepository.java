@@ -2,6 +2,7 @@ package com.hoainhi.staywise.reponsitories;
 
 import com.hoainhi.staywise.dtos.HomeStayOptionDTO;
 import com.hoainhi.staywise.entities.HomeStay;
+import com.hoainhi.staywise.enums.TheLoaiHomeStay;
 import com.hoainhi.staywise.enums.TrangThaiHomeStay;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,5 +37,11 @@ public interface HomeStayRepository extends JpaRepository<HomeStay, Long> {
     Optional<HomeStay> findByIdAndNguoiDung_Id(
             Long id,
             Long nguoiDungId
+    );
+
+    Page<HomeStay> findByTrangThaiHomeStayAndTheLoaiHomeStay(
+            TrangThaiHomeStay trangThai,
+            TheLoaiHomeStay theLoai,
+            Pageable pageable
     );
 }

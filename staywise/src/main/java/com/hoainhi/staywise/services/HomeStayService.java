@@ -3,6 +3,7 @@ package com.hoainhi.staywise.services;
 import com.hoainhi.staywise.dtos.HomeStayDTO;
 import com.hoainhi.staywise.dtos.HomeStayOptionDTO;
 import com.hoainhi.staywise.entities.HomeStay;
+import com.hoainhi.staywise.enums.TheLoaiHomeStay;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,4 +22,5 @@ public interface HomeStayService {
     String saveHomeStay(HomeStayDTO dto, List<MultipartFile> files, Long maChuHomeStay) throws IOException;
     List<HomeStayOptionDTO> layDanhSachHomeStayDaDuyet(String email);
     HomeStayDTO layThongTinHomeStay(Long id, String email);
+    List<HomeStayDTO> layHomeStayTheoTheLoai(TheLoaiHomeStay theLoai);
 }
