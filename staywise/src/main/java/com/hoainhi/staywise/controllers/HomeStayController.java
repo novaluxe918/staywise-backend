@@ -111,19 +111,13 @@ public class HomeStayController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> layThongTinHomeStay(
-            @PathVariable Long id,
-            Authentication authentication
+            @PathVariable Long id
     ) {
 
         try {
-            if (authentication == null || !authentication.isAuthenticated()) {
-                return ResponseEntity.status(401)
-                        .body("Vui lòng đăng nhập!");
-            }
 
             HomeStayDTO dto = homeStayService.layThongTinHomeStay(
-                    id,
-                    authentication.getName()
+                    id
             );
 
             return ResponseEntity.ok(dto);

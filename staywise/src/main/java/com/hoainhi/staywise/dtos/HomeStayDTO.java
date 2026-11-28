@@ -67,4 +67,6 @@ public class HomeStayDTO {
     private List<String> dichVuHienThi = new ArrayList<>();
 
     private List<HinhAnhHomeStayDTO> danhSachHinhAnh = new ArrayList<>();
+    private Boolean capNhatTienIchHS = false;
+    private Boolean capNhatDichVuHS = false;
 }

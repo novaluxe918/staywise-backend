@@ -72,13 +72,13 @@ public class HomeStayServiceImpl implements HomeStayService {
     @Autowired
     private CloudinaryService cloudinaryService;
 
+
     @Override
     public Page<HomeStayDTO> showAll(
             String tuKhoa,
             int trang,
             int kichThuoc
     ) {
-
         Pageable pageable = PageRequest.of(
                 trang,
                 kichThuoc,
@@ -90,43 +90,81 @@ public class HomeStayServiceImpl implements HomeStayService {
         if (tuKhoa == null || tuKhoa.trim().isEmpty()) {
             homeStays = homeStayRepository.findAll(pageable);
         } else {
-            homeStays = homeStayRepository
-                    .findByTenHomeStayContaining(
-                            tuKhoa.trim(),
-                            pageable
-                    );
+            homeStays = homeStayRepository.findByTenHomeStayContaining(
+                    tuKhoa.trim(),
+                    pageable
+            );
         }
+
+        // 1. Lấy danh sách mã HomeStay trong trang hiện tại
+        List<Long> danhSachMaHomeStay = homeStays.getContent()
+                .stream()
+                .map(HomeStay::getId)
+                .toList();
+
+        // 2. Truy vấn giá thấp nhất của từng HomeStay
+        Map<Long, BigDecimal> mapGiaThapNhat = new HashMap<>();
+
+        if (!danhSachMaHomeStay.isEmpty()) {
+            List<Object[]> ketQuaGia =
+                    giaPhongRepository.findGiaThapNhatTheoDanhSachHomeStay(
+                            danhSachMaHomeStay,
+                            TrangThai.DANG_HOAT_DONG,
+                            LocalDateTime.now()
+                    );
+
+            mapGiaThapNhat = ketQuaGia.stream()
+                    .collect(Collectors.toMap(
+                            row -> (Long) row[0],
+                            row -> (BigDecimal) row[1]
+                    ));
+        }
+
+        // 3. Mapping dữ liệu HomeStay sang DTO
+        Map<Long, BigDecimal> finalMapGiaThapNhat = mapGiaThapNhat;
 
         return homeStays.map(homeStay -> {
 
             HomeStayDTO dto = new HomeStayDTO();
 
-
             BeanUtils.copyProperties(homeStay, dto);
 
-
+            // Thông tin chủ HomeStay
             if (homeStay.getNguoiDung() != null) {
                 dto.setTenChuHomeStay(
                         homeStay.getNguoiDung().getHoTen()
                 );
             }
 
-           if(homeStay.getHomeStays() != null){
-               List<HinhAnhHomeStayDTO> danhSachAnh =
-                       homeStay.getHomeStays().stream()
-                               .map(anh -> {
-                                   HinhAnhHomeStayDTO anhDTO = new HinhAnhHomeStayDTO();
-                                   anhDTO.setId(anh.getId());
-                                   anhDTO.setDuongDan(anh.getDuongDan());
-                                   anhDTO.setLaAnhDaiDien(anh.isLaAnhDaiDien());
-                                   return anhDTO;
-                               })
-                               .toList();
+            // Giá thấp nhất
+            dto.setGiaThapNhat(
+                    finalMapGiaThapNhat.get(homeStay.getId())
+            );
 
-               dto.setDanhSachHinhAnh(danhSachAnh);
+            // Danh sách hình ảnh
+            if (homeStay.getHomeStays() != null) {
+                List<HinhAnhHomeStayDTO> danhSachAnh =
+                        homeStay.getHomeStays()
+                                .stream()
+                                .map(anh -> {
+                                    HinhAnhHomeStayDTO anhDTO =
+                                            new HinhAnhHomeStayDTO();
 
-           }
-           dto.setTienIchHienThi(
+                                    anhDTO.setId(anh.getId());
+                                    anhDTO.setDuongDan(anh.getDuongDan());
+                                    anhDTO.setLaAnhDaiDien(
+                                            anh.isLaAnhDaiDien()
+                                    );
+
+                                    return anhDTO;
+                                })
+                                .toList();
+
+                dto.setDanhSachHinhAnh(danhSachAnh);
+            }
+
+            // Danh sách tiện ích
+            dto.setTienIchHienThi(
                     homeStay.getTienIchHomeStays()
                             .stream()
                             .filter(item -> item.getTienIch() != null)
@@ -134,7 +172,7 @@ public class HomeStayServiceImpl implements HomeStayService {
                             .toList()
             );
 
-
+            // Danh sách dịch vụ
             dto.setDichVuHienThi(
                     homeStay.getHomeStayDichVus()
                             .stream()
@@ -146,6 +184,7 @@ public class HomeStayServiceImpl implements HomeStayService {
             return dto;
         });
     }
+
     @Override
     public HomeStay getById(Long id) {
         HomeStay homeStay = homeStayRepository.findById(id).orElseThrow(() -> new RuntimeException("Khong tim thay homestay"));
@@ -273,6 +312,10 @@ public class HomeStayServiceImpl implements HomeStayService {
                 homeStay.setTinhThanh(dto.getTinhThanh());
             }
 
+            if (dto.getEmail() != null) {
+                homeStay.setEmail(dto.getEmail());
+            }
+
             if (dto.getDiaChi() != null) {
                 homeStay.setDiaChi(dto.getDiaChi());
             }
@@ -287,17 +330,22 @@ public class HomeStayServiceImpl implements HomeStayService {
 
         Long maHomeStay = homeStay.getId();
 
-        if (dto.getDanhSachTienIchHS() != null) {
+        if (Boolean.TRUE.equals(dto.getCapNhatTienIchHS())) {
 
-            // Xóa các tiện ích liên kết cũ
+
             tienIchHomeStayRepository.deleteByHomeStay_Id(maHomeStay);
 
-            for (Long item : dto.getDanhSachTienIchHS()) {
+
+            List<Long> danhSachTienIch =
+                    dto.getDanhSachTienIchHS() != null
+                            ? dto.getDanhSachTienIchHS()
+                            : List.of();
+
+            for (Long item : danhSachTienIch) {
 
                 TienIch tienIch = tienIchRepository.findById(item)
                         .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Không tìm thấy tiện ích " + item));
+                                new RuntimeException("Không tìm thấy tiện ích " + item));
 
                 TienIchHomeStay tienIchHomeStay = new TienIchHomeStay();
                 tienIchHomeStay.setHomeStay(homeStay);
@@ -307,17 +355,21 @@ public class HomeStayServiceImpl implements HomeStayService {
             }
         }
 
-        // Xử lý dịch vụ
-        if (dto.getDanhSachDichVuHS() != null) {
+        if (Boolean.TRUE.equals(dto.getCapNhatDichVuHS())) {
 
+            // Xóa toàn bộ dịch vụ cũ
             homeStayDichVuRepository.deleteByHomeStay_Id(maHomeStay);
 
-            for (Long item : dto.getDanhSachDichVuHS()) {
+            List<Long> danhSachDichVu =
+                    dto.getDanhSachDichVuHS() != null
+                            ? dto.getDanhSachDichVuHS()
+                            : List.of();
+
+            for (Long item : danhSachDichVu) {
 
                 DichVu dichVu = dichVuRepository.findById(item)
                         .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Không tìm thấy dịch vụ  " + item));
+                                new RuntimeException("Không tìm thấy dịch vụ " + item));
 
                 HomeStayDichVu stayDichVu = new HomeStayDichVu();
                 stayDichVu.setHomeStay(homeStay);
@@ -357,29 +409,17 @@ public class HomeStayServiceImpl implements HomeStayService {
 
     @Override
     @Transactional
-    public HomeStayDTO layThongTinHomeStay(Long id, String email) {
+    public HomeStayDTO layThongTinHomeStay(Long id) {
 
-        NguoiDung chuHomeStay = nguoiDungRepository.findByEmail(email)
+        HomeStay homeStay = homeStayRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Không tìm thấy tài khoản!")
+                        new RuntimeException("Không tìm thấy HomeStay!")
                 );
 
-
-        if (chuHomeStay.getVaiTro() != VaiTro.OWNER) {
-            throw new RuntimeException("Bạn không có quyền truy cập!");
+        // Chỉ hiển thị HomeStay đã được duyệt
+        if (homeStay.getTrangThaiHomeStay() != TrangThaiHomeStay.DA_DUYET) {
+            throw new RuntimeException("HomeStay không tồn tại hoặc chưa được công khai!");
         }
-
-        HomeStay homeStay = homeStayRepository
-                .findByIdAndNguoiDung_Id(
-                        id,
-                        chuHomeStay.getId()
-                )
-                .orElseThrow(() ->
-                        new RuntimeException(
-                                "Không tìm thấy HomeStay hoặc bạn không có quyền truy cập!"
-                        )
-                );
-
 
         HomeStayDTO dto = new HomeStayDTO();
 
@@ -391,28 +431,25 @@ public class HomeStayServiceImpl implements HomeStayService {
                         : null
         );
 
-        List<String> danhSachTienIch = homeStay.getTienIchHomeStays()
-                .stream()
-                .map(item -> item.getTienIch().getTenTienIch())
-                .toList();
+        dto.setTienIchHienThi(
+                homeStay.getTienIchHomeStays()
+                        .stream()
+                        .map(item -> item.getTienIch().getTenTienIch())
+                        .toList()
+        );
 
-        dto.setTienIchHienThi(danhSachTienIch);
-
-
-        List<String> danhSachDichVu = homeStay.getHomeStayDichVus()
-                .stream()
-                .map(item -> item.getDichVu().getTenDichVu())
-                .toList();
-
-        dto.setDichVuHienThi(danhSachDichVu);
-
+        dto.setDichVuHienThi(
+                homeStay.getHomeStayDichVus()
+                        .stream()
+                        .map(item -> item.getDichVu().getTenDichVu())
+                        .toList()
+        );
 
         dto.setDanhSachHinhAnh(
                 homeStay.getHomeStays()
                         .stream()
                         .map(anh -> {
-                            HinhAnhHomeStayDTO anhDTO =
-                                    new HinhAnhHomeStayDTO();
+                            HinhAnhHomeStayDTO anhDTO = new HinhAnhHomeStayDTO();
 
                             anhDTO.setId(anh.getId());
                             anhDTO.setDuongDan(anh.getDuongDan());
@@ -422,9 +459,6 @@ public class HomeStayServiceImpl implements HomeStayService {
                         })
                         .toList()
         );
-
-
-
 
         return dto;
     }
